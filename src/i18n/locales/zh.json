@@ -284,10 +284,17 @@
     "GLM-4": "GLM-4"
   },
   "doubao": {
-    "name": "豆包"
+    "name": "豆包",
+    "modelId": "推理接入点 ID",
+    "modelIdPrompt": "在火山引擎控制台创建推理接入点后获取，格式如 ep-xxx",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "火山引擎豆包 API 地址，默认为 https://ark.cn-beijing.volces.com/api/v3"
   },
   "deepseek": {
-    "name": "DeepSeek"
+    "name": "DeepSeek",
+    "model": "模型",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "DeepSeek API 地址，默认为 https://api.deepseek.com"
   },
   "pi": {
     "name": "Pi",

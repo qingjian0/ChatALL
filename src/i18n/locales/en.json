@@ -284,10 +284,17 @@
     "GLM-4": "GLM-4"
   },
   "doubao": {
-    "name": "Doubao"
+    "name": "Doubao",
+    "modelId": "Inference Endpoint ID",
+    "modelIdPrompt": "Get from Volcengine console after creating inference endpoint, format: ep-xxx",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "Volcengine Doubao API URL, default: https://ark.cn-beijing.volces.com/api/v3"
   },
   "deepseek": {
-    "name": "DeepSeek"
+    "name": "DeepSeek",
+    "model": "Model",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "DeepSeek API URL, default: https://api.deepseek.com"
   },
   "pi": {
     "name": "Pi",

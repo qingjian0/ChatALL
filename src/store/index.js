@@ -87,10 +87,18 @@ export default createStore({
       refresh_token: "",
     },
     doubao: {
-      token: "",
+      apiKey: "",
+      modelId: "",
+      baseUrl: "",
+      temperature: 0.7,
+      pastRounds: 5,
     },
     deepseek: {
-      token: "",
+      apiKey: "",
+      modelId: "deepseek-chat",
+      baseUrl: "",
+      temperature: 0.7,
+      pastRounds: 5,
     },
     qianWen: {
       xsrfToken: "",
@@ -247,11 +255,11 @@ export default createStore({
     setKimi(state, tokens) {
       state.kimi = { ...state.kimi, ...tokens };
     },
-    setDoubao(state, token) {
-      state.doubao.token = token;
+    setDoubao(state, values) {
+      state.doubao = { ...state.doubao, ...values };
     },
-    setDeepSeek(state, token) {
-      state.deepseek.token = token;
+    setDeepSeek(state, values) {
+      state.deepseek = { ...state.deepseek, ...values };
     },
     setWenxinQianfan(state, values) {
       state.wenxinQianfan = { ...state.wenxinQianfan, ...values };

@@ -355,12 +355,6 @@ function createNewWindow({ url, userAgent = "", loginScript }) {
           access_token,
           refresh_token,
         });
-      } else if (url.includes("doubao.com")) {
-        const token = await getLocalStorage("doubao_token");
-        mainWindow.webContents.send("DOUBAO-TOKEN", token);
-      } else if (url.includes("deepseek.com")) {
-        const token = await getLocalStorage("deepseek_token");
-        mainWindow.webContents.send("DEEPSEEK-TOKEN", token);
       }
     } catch (err) {
       console.error(err);

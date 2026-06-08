@@ -1,29 +1,79 @@
-<template> <login-setting :bot="bot"></login-setting> </template>
+<template>
+  <CommonBotSettings
+    :settings="settings"
+    :brand-id="brandId"
+    mutation-type="setDoubao"
+    :watcher="watcher"
+  ></CommonBotSettings>
+</template>
 
 <script>
-const electron = window.require("electron");
-const ipcRenderer = electron.ipcRenderer;
-import { mapMutations } from "vuex";
-
+import _bots from "@/bots";
 import Bot from "@/bots/DoubaoBot";
-import LoginSetting from "@/components/BotSettings/LoginSetting.vue";
+import CommonBotSettings from "@/components/BotSettings/CommonBotSettings.vue";
+import { Type } from "./settings.const";
 
+const settings = [
+  {
+    type: Type.Text,
+    name: "apiKey",
+    title: "common.apiKey",
+    description: "settings.secretPrompt",
+    placeholder: "从火山引擎控制台获取",
+  },
+  {
+    type: Type.Text,
+    name: "modelId",
+    title: "doubao.modelId",
+    description: "doubao.modelIdPrompt",
+    placeholder: "ep-...",
+  },
+  {
+    type: Type.Slider,
+    name: "temperature",
+    title: "openaiApi.temperature",
+    description: "openaiApi.temperaturePrompt",
+    min: 0,
+    max: 2,
+    step: 0.1,
+    ticks: {
+      0: "openaiApi.temperature0",
+      2: "openaiApi.temperature2",
+    },
+  },
+  {
+    type: Type.Slider,
+    name: "pastRounds",
+    title: "bot.pastRounds",
+    description: "bot.pastRoundsPrompt",
+    min: 0,
+    max: 10,
+    step: 1,
+  },
+  {
+    type: Type.Text,
+    name: "baseUrl",
+    title: "doubao.baseUrl",
+    description: "doubao.baseUrlPrompt",
+    placeholder: "https://ark.cn-beijing.volces.com/api/v3",
+  },
+];
 export default {
   components: {
-    LoginSetting,
+    CommonBotSettings,
   },
   data() {
     return {
-      bot: Bot.getInstance(),
+      settings: settings,
+      brandId: Bot._brandId,
     };
   },
-  mounted() {
-    ipcRenderer.on("DOUBAO-TOKEN", (event, token) => {
-      this.setDoubao(token);
-    });
-  },
   methods: {
-    ...mapMutations(["setDoubao"]),
+    watcher() {
+      _bots.all
+        .filter((bot) => bot instanceof Bot)
+        .map((bot) => bot.setupModel());
+    },
   },
 };
 </script>

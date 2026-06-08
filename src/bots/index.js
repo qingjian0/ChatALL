@@ -181,8 +181,6 @@ export const botTags = {
     bots.getBotByClassName("PhindBot"),
     bots.getBotByClassName("PiBot"),
     bots.getBotByClassName("KimiBot"),
-    bots.getBotByClassName("DoubaoBot"),
-    bots.getBotByClassName("DeepSeekBot"),
   ],
   paid: [
     bots.getBotByClassName("ChatGPT4Bot"),
@@ -236,6 +234,8 @@ export const botTags = {
     bots.getBotByClassName("Grok2APIBot"),
     bots.getBotByClassName("Grok3APIBot"),
     bots.getBotByClassName("Grok3MiniAPIBot"),
+    bots.getBotByClassName("DoubaoBot"),
+    bots.getBotByClassName("DeepSeekBot"),
   ],
   madeInChina: [
     bots.getBotByClassName("Qihoo360AIBrainBot"),

@@ -1,36 +1,42 @@
-import AsyncLock from "async-lock";
-import Bot from "@/bots/Bot";
-import axios from "axios";
+import LangChainBot from "@/bots/LangChainBot";
 import store from "@/store";
-import { SSE } from "sse.js";
+import { ChatOpenAI } from "@langchain/openai";
 
-export default class DeepSeekBot extends Bot {
+export default class DeepSeekBot extends LangChainBot {
   static _brandId = "deepseek";
   static _className = "DeepSeekBot";
   static _logoFilename = "default-logo.svg";
-  static _loginUrl = "https://chat.deepseek.com/";
-  static _lock = new AsyncLock();
+  static _loginUrl = "https://platform.deepseek.com/";
+  static _model = "deepseek-chat";
 
   constructor() {
     super();
   }
 
   async _checkAvailability() {
-    return !!store.state.deepseek?.token;
+    let available = false;
+    if (store.state.deepseek?.apiKey) {
+      this.setupModel();
+      available = true;
+    }
+    return available;
   }
 
-  async _sendPrompt(prompt, onUpdateResponse, callbackParam) {
-    const context = await this.getChatContext();
-    return new Promise((resolve, reject) => {
-      onUpdateResponse(callbackParam, {
-        content: "DeepSeek 功能正在开发中...",
-        done: true,
-      });
-      resolve();
+  _setupModel() {
+    const chatModel = new ChatOpenAI({
+      configuration: {
+        basePath: store.state.deepseek.baseUrl ||
+          "https://api.deepseek.com",
+      },
+      openAIApiKey: store.state.deepseek.apiKey,
+      modelName: store.state.deepseek.modelId || "deepseek-chat",
+      temperature: store.state.deepseek.temperature ?? 0.7,
+      streaming: true,
     });
+    return chatModel;
   }
 
-  async createChatContext() {
-    return {};
+  getPastRounds() {
+    return store.state.deepseek?.pastRounds ?? 5;
   }
 }
