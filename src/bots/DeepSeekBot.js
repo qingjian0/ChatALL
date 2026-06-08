@@ -1,13 +1,13 @@
 import LangChainBot from "@/bots/LangChainBot";
 import store from "@/store";
 import { ChatOpenAI } from "@langchain/openai";
+import AsyncLock from "async-lock";
 
 export default class DeepSeekBot extends LangChainBot {
   static _brandId = "deepseek";
   static _className = "DeepSeekBot";
   static _logoFilename = "default-logo.svg";
-  static _loginUrl = "https://platform.deepseek.com/";
-  static _model = "deepseek-chat";
+  static _lock = new AsyncLock();
 
   constructor() {
     super();
@@ -15,7 +15,8 @@ export default class DeepSeekBot extends LangChainBot {
 
   async _checkAvailability() {
     let available = false;
-    if (store.state.deepseek?.apiKey) {
+    const { apiKey } = store.state.deepseek;
+    if (apiKey) {
       this.setupModel();
       available = true;
     }
@@ -23,14 +24,14 @@ export default class DeepSeekBot extends LangChainBot {
   }
 
   _setupModel() {
+    const { apiKey, modelId, baseUrl, temperature } = store.state.deepseek;
     const chatModel = new ChatOpenAI({
+      openAIApiKey: apiKey,
+      modelName: modelId || "deepseek-chat",
+      temperature: temperature || 0.7,
       configuration: {
-        basePath: store.state.deepseek.baseUrl ||
-          "https://api.deepseek.com",
+        basePath: baseUrl || "https://api.deepseek.com",
       },
-      openAIApiKey: store.state.deepseek.apiKey,
-      modelName: store.state.deepseek.modelId || "deepseek-chat",
-      temperature: store.state.deepseek.temperature ?? 0.7,
       streaming: true,
     });
     return chatModel;

@@ -1,12 +1,13 @@
 import LangChainBot from "@/bots/LangChainBot";
 import store from "@/store";
 import { ChatOpenAI } from "@langchain/openai";
+import AsyncLock from "async-lock";
 
 export default class DoubaoBot extends LangChainBot {
   static _brandId = "doubao";
   static _className = "DoubaoBot";
   static _logoFilename = "default-logo.svg";
-  static _loginUrl = "https://www.volcengine.com/docs/82379";
+  static _lock = new AsyncLock();
 
   constructor() {
     super();
@@ -14,7 +15,8 @@ export default class DoubaoBot extends LangChainBot {
 
   async _checkAvailability() {
     let available = false;
-    if (store.state.doubao?.apiKey && store.state.doubao?.modelId) {
+    const { apiKey, modelId } = store.state.doubao;
+    if (apiKey && modelId) {
       this.setupModel();
       available = true;
     }
@@ -22,14 +24,14 @@ export default class DoubaoBot extends LangChainBot {
   }
 
   _setupModel() {
+    const { apiKey, modelId, baseUrl, temperature } = store.state.doubao;
     const chatModel = new ChatOpenAI({
+      openAIApiKey: apiKey,
+      modelName: modelId,
+      temperature: temperature || 0.7,
       configuration: {
-        basePath: store.state.doubao.baseUrl ||
-          "https://ark.cn-beijing.volces.com/api/v3",
+        basePath: baseUrl || "https://ark.cn-beijing.volces.com/api/v3",
       },
-      openAIApiKey: store.state.doubao.apiKey,
-      modelName: store.state.doubao.modelId,
-      temperature: store.state.doubao.temperature ?? 0.7,
       streaming: true,
     });
     return chatModel;
