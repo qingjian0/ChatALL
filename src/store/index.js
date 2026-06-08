@@ -86,6 +86,12 @@ export default createStore({
       access_token: "",
       refresh_token: "",
     },
+    doubao: {
+      token: "",
+    },
+    deepseek: {
+      token: "",
+    },
     qianWen: {
       xsrfToken: "",
     },
@@ -240,6 +246,12 @@ export default createStore({
     },
     setKimi(state, tokens) {
       state.kimi = { ...state.kimi, ...tokens };
+    },
+    setDoubao(state, token) {
+      state.doubao.token = token;
+    },
+    setDeepSeek(state, token) {
+      state.deepseek.token = token;
     },
     setWenxinQianfan(state, values) {
       state.wenxinQianfan = { ...state.wenxinQianfan, ...values };

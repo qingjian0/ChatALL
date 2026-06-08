@@ -283,6 +283,12 @@
     "GLM-3": "GLM-3",
     "GLM-4": "GLM-4"
   },
+  "doubao": {
+    "name": "豆包"
+  },
+  "deepseek": {
+    "name": "DeepSeek"
+  },
   "pi": {
     "name": "Pi",
     "waitPiIntro": "请点击下面的网站链接，等待Pi介绍完成后，然后关闭窗口。"
