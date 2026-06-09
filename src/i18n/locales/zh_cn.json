@@ -1,0 +1,280 @@
+{
+  "common": {
+    "apiKey": "API Key",
+    "secretPrompt": "此信息不会上传到任何服务器，仅存储在本地。",
+    "botName": "机器人名称",
+    "prompt": "提示词",
+    "temperature": "温度参数",
+    "temperaturePrompt": "较高的值会产生更多元的输出，较低的值会产生更确定的输出",
+    "system": "系统提示词",
+    "save": "保存",
+    "reset": "重置",
+    "cancel": "取消",
+    "confirm": "确认",
+    "ok": "确定"
+  },
+  "bot": {
+    "name": "AI机器人",
+    "disabled": "已禁用",
+    "notImplemented": "此机器人尚未实现",
+    "notAvailable": "此机器人不可用：{botName}。请在设置中配置。",
+    "waiting": "{botName} 正在等待上一次响应完成...",
+    "pastRounds": "历史对话轮数",
+    "pastRoundsPrompt": "保留的历史对话轮数，用于多轮对话上下文"
+  },
+  "chat": {
+    "newChat": "新对话",
+    "chatHistory": "对话历史",
+    "chatList": "对话列表",
+    "systemPrompt": "系统提示词",
+    "systemPromptPrompt": "设置对话的系统提示词",
+    "hideSystemPrompt": "隐藏系统提示词",
+    "showSystemPrompt": "显示系统提示词",
+    "promptPlaceholder": "输入您的问题..."
+  },
+  "error": {
+    "error": "错误",
+    "requireLogin": "请登录后再试：\n{link}",
+    "solveChallenge": "请访问此链接解决验证问题："
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "theme": "主题",
+    "themeSystem": "跟随系统",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "menuBar": "显示菜单栏",
+    "appBar": "显示应用栏",
+    "botSettings": "机器人设置",
+    "bots": "AI 机器人",
+    "botsAndPrompts": "机器人和提示词",
+    "about": "关于",
+    "general": "通用设置",
+    "secretPrompt": "此信息不会上传到任何服务器，仅存储在本地。"
+  },
+  "openaiApi": {
+    "temperature": "温度参数",
+    "temperaturePrompt": "较高的值会产生更多元的输出，较低的值会产生更确定的输出",
+    "temperature0": "确定",
+    "temperature2": "随机"
+  },
+  "geminiApi": {
+    "temperature": "温度参数",
+    "topK": "Top K",
+    "topKPrompt": "控制模型考虑的令牌数量",
+    "topP": "Top P",
+    "topPPrompt": "控制模型采样的概率阈值"
+  },
+  "claudeApi": {
+    "maxTokens": "最大 Token 数",
+    "maxTokensPrompt": "生成的最大令牌数",
+    "alterUrl": "API 替代地址",
+    "alterUrlPrompt": "使用 Claude API 的替代地址"
+  },
+  "chatGlm": {
+    "name": "智谱清言",
+    "GLM-3": "GLM-3",
+    "GLM-4": "GLM-4"
+  },
+  "doubao": {
+    "name": "豆包",
+    "modelId": "推理接入点 ID",
+    "modelIdPrompt": "在火山引擎控制台创建推理接入点后获取，格式如 ep-xxx",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "火山引擎豆包 API 地址，默认为 https://ark.cn-beijing.volces.com/api/v3"
+  },
+  "deepseek": {
+    "name": "DeepSeek",
+    "model": "模型",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "DeepSeek API 地址，默认为 https://api.deepseek.com"
+  },
+  "chatglmApi": {
+    "name": "智谱AI API",
+    "model": "模型",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "智谱 AI API 地址，默认为 https://open.bigmodel.cn/api/paas/v4"
+  },
+  "qwenApi": {
+    "name": "通义千问 API",
+    "model": "模型",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "阿里云百炼 API 地址，默认为 https://dashscope.aliyuncs.com/compatible-mode/v1"
+  },
+  "sparkApi": {
+    "name": "讯飞星火 API",
+    "model": "模型",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "讯飞星火 API 地址"
+  },
+  "miniMax": {
+    "name": "MiniMax API",
+    "model": "模型",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "MiniMax API 地址，默认为 https://api.minimax.chat/v1"
+  },
+  "pi": {
+    "name": "Pi",
+    "waitPiIntro": "请点击下面的网站链接，等待Pi介绍完成后，然后关闭窗口。"
+  },
+  "falcon": {
+    "name": "Falcon",
+    "falcon-180b": "180b",
+    "temperature": "Temperature",
+    "temperaturePrompt": "较高的值会产生更多元的输出",
+    "maxNewTokens": "最大新 token 数量",
+    "maxNewTokensPrompt": "新 token 的最大数量",
+    "topP": "Top P",
+    "topPPrompt": "控制模型采样的概率阈值",
+    "repetitionPenalty": "重复惩罚",
+    "repetitionPenaltyPrompt": "控制文本重复程度的惩罚值"
+  },
+  "groqApi": {
+    "name": "Groq Cloud",
+    "temperature": "温度参数",
+    "maxTokens": "最大 Token 数"
+  },
+  "xaiApi": {
+    "name": "xAI Grok"
+  },
+  "cohereApi": {
+    "name": "Cohere"
+  },
+  "mistral": {
+    "name": "Mistral AI",
+    "model": "模型"
+  },
+  "characterAi": {
+    "name": "Character.AI",
+    "characterId": "角色 ID",
+    "version": "版本",
+    "username": "用户名"
+  },
+  "claudeAi": {
+    "name": "Claude.ai",
+    "org": "组织"
+  },
+  "perplexity": {
+    "name": "Perplexity",
+    "version": "版本"
+  },
+  "poe": {
+    "name": "Poe",
+    "formkey": "Form Key"
+  },
+  "lmsys": {
+    "name": "LMSYS",
+    "model": "模型"
+  },
+  "phind": {
+    "name": "Phind",
+    "model": "模型"
+  },
+  "youChat": {
+    "name": "YouChat"
+  },
+  "skyWork": {
+    "name": "天工 AI",
+    "inviteToken": "邀请码",
+    "token": "Token"
+  },
+  "spark": {
+    "name": "讯飞星火",
+    "version": "版本"
+  },
+  "qihoo360AiBrain": {
+    "name": "360 智脑",
+    "prompt": "提示词"
+  },
+  "youChatBot": {
+    "name": "YouChat"
+  },
+  "qianWen": {
+    "name": "通义千问"
+  },
+  "bard": {
+    "name": "Google Bard"
+  },
+  "chatgpt": {
+    "name": "ChatGPT",
+    "refreshCycle": "刷新周期（分钟）",
+    "refreshCyclePrompt": "ChatGPT 刷新登录状态的周期"
+  },
+  "bingChat": {
+    "name": "微软必应聊天"
+  },
+  "bingChatCreative": {
+    "name": "必应聊天（创意模式）"
+  },
+  "bingChatBalanced": {
+    "name": "必应聊天（均衡模式）"
+  },
+  "bingChatPrecise": {
+    "name": "必应聊天（精确模式）"
+  },
+  "gradio": {
+    "name": "Gradio",
+    "url": "URL",
+    "fnIndex": "函数索引"
+  },
+  "huggingChat": {
+    "name": "HuggingChat"
+  },
+  "moss": {
+    "name": "MOSS"
+  },
+  "actions": {
+    "name": "快捷操作",
+    "newPrompt": "新建提示词",
+    "editPrompt": "编辑提示词",
+    "deletePrompt": "删除提示词",
+    "summarize": "汇总",
+    "summarize1": "汇总 1"
+  },
+  "info": {
+    "title": "关于 ChatALL",
+    "appName": "ChatALL (齐叨)",
+    "description": "同时与多个 AI 机器人聊天，发现最佳答案",
+    "version": "版本",
+    "sourceCode": "源代码",
+    "bugReport": "错误报告",
+    "disclaimer": "免责声明",
+    "disclaimerContent": "ChatALL 不会上传您的对话内容到任何服务器。所有聊天历史、设置和登录数据都保存在您的本地计算机上。"
+  },
+  "tabs": {
+    "chat": "聊天",
+    "bots": "机器人",
+    "prompts": "提示词",
+    "actions": "操作"
+  },
+  "bots": {
+    "favBots": "收藏的机器人",
+    "allBots": "所有机器人",
+    "free": "免费",
+    "paid": "付费 API",
+    "api": "API",
+    "web": "网页访问",
+    "madeInChina": "国产",
+    "recommended": "推荐"
+  },
+  "login": {
+    "loginRequired": "需要登录",
+    "login": "登录",
+    "logout": "登出",
+    "loginTip": "点击登录按钮在新窗口中登录",
+    "logoutTip": "点击登出按钮清除登录状态"
+  },
+  "download": {
+    "name": "下载 ChatALL",
+    "windows": "Windows",
+    "macos": "macOS",
+    "linux": "Linux"
+  },
+  "confirm": {
+    "reset": "确定要重置吗？",
+    "resetHint": "此操作将删除所有聊天记录和设置",
+    "clear": "确定要清除吗？",
+    "clearHint": "此操作将清除所有选中的响应"
+  }
+}

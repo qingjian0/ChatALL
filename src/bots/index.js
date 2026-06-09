@@ -66,8 +66,14 @@ import ClaudeAPIHaikuBot from "./anthropic/ClaudeAPIHaikuBot";
 import Grok2APIBot from "./xai/Grok2APIBot";
 import Grok3APIBot from "./xai/Grok3APIBot";
 import Grok3MiniAPIBot from "./xai/Grok3MiniAPIBot";
-import DoubaoBot from "./DoubaoBot";
-import DeepSeekBot from "./DeepSeekBot";
+import DoubaoBot from "./doubao/DoubaoBot";
+import DeepSeekBot from "./deepseek/DeepSeekBot";
+import DeepSeekChatBot from "./deepseek/DeepSeekChatBot";
+import DeepSeekReasonerBot from "./deepseek/DeepSeekReasonerBot";
+import ChatGLMAPIBot from "./zhipu/ChatGLMAPIBot";
+import QwenAPIBot from "./qwen/QwenAPIBot";
+import SparkAPIBot from "./spark/SparkAPIBot";
+import MiniMaxAPIBot from "./minimax/MiniMaxAPIBot";
 
 const all = [
   Qihoo360AIBrainBot.getInstance(),
@@ -125,6 +131,12 @@ const all = [
   KimiBot.getInstance(),
   DoubaoBot.getInstance(),
   DeepSeekBot.getInstance(),
+  DeepSeekChatBot.getInstance(),
+  DeepSeekReasonerBot.getInstance(),
+  ChatGLMAPIBot.getInstance(),
+  QwenAPIBot.getInstance(),
+  SparkAPIBot.getInstance(),
+  MiniMaxAPIBot.getInstance(),
   MistralBot.getInstance(),
   MOSSBot.getInstance(),
   HuggingChatBot.getInstance(),
@@ -236,6 +248,12 @@ export const botTags = {
     bots.getBotByClassName("Grok3MiniAPIBot"),
     bots.getBotByClassName("DoubaoBot"),
     bots.getBotByClassName("DeepSeekBot"),
+    bots.getBotByClassName("DeepSeekChatBot"),
+    bots.getBotByClassName("DeepSeekReasonerBot"),
+    bots.getBotByClassName("ChatGLMAPIBot"),
+    bots.getBotByClassName("QwenAPIBot"),
+    bots.getBotByClassName("SparkAPIBot"),
+    bots.getBotByClassName("MiniMaxAPIBot"),
   ],
   madeInChina: [
     bots.getBotByClassName("Qihoo360AIBrainBot"),
@@ -251,6 +269,12 @@ export const botTags = {
     bots.getBotByClassName("KimiBot"),
     bots.getBotByClassName("DoubaoBot"),
     bots.getBotByClassName("DeepSeekBot"),
+    bots.getBotByClassName("DeepSeekChatBot"),
+    bots.getBotByClassName("DeepSeekReasonerBot"),
+    bots.getBotByClassName("ChatGLMAPIBot"),
+    bots.getBotByClassName("QwenAPIBot"),
+    bots.getBotByClassName("SparkAPIBot"),
+    bots.getBotByClassName("MiniMaxAPIBot"),
   ],
 };
 export default bots;

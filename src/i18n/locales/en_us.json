@@ -1,0 +1,280 @@
+{
+  "common": {
+    "apiKey": "API Key",
+    "secretPrompt": "This information will not be uploaded to any server, only stored locally.",
+    "botName": "Bot Name",
+    "prompt": "Prompt",
+    "temperature": "Temperature",
+    "temperaturePrompt": "Higher values produce more diverse output, lower values produce more deterministic output",
+    "system": "System Prompt",
+    "save": "Save",
+    "reset": "Reset",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "OK"
+  },
+  "bot": {
+    "name": "AI Bot",
+    "disabled": "Disabled",
+    "notImplemented": "This bot has not been implemented yet",
+    "notAvailable": "This bot is not available: {botName}. Please configure in settings.",
+    "waiting": "{botName} is waiting for the previous response to complete...",
+    "pastRounds": "Past Rounds",
+    "pastRoundsPrompt": "Number of past conversation rounds to keep for context"
+  },
+  "chat": {
+    "newChat": "New Chat",
+    "chatHistory": "Chat History",
+    "chatList": "Chat List",
+    "systemPrompt": "System Prompt",
+    "systemPromptPrompt": "Set the system prompt for the conversation",
+    "hideSystemPrompt": "Hide System Prompt",
+    "showSystemPrompt": "Show System Prompt",
+    "promptPlaceholder": "Ask your question..."
+  },
+  "error": {
+    "error": "Error",
+    "requireLogin": "Please login and try again: \n{link}",
+    "solveChallenge": "Please visit this link to solve the verification challenge:"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themeSystem": "Follow System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "menuBar": "Show Menu Bar",
+    "appBar": "Show App Bar",
+    "botSettings": "Bot Settings",
+    "bots": "AI Bots",
+    "botsAndPrompts": "Bots & Prompts",
+    "about": "About",
+    "general": "General Settings",
+    "secretPrompt": "This information will not be uploaded to any server, only stored locally."
+  },
+  "openaiApi": {
+    "temperature": "Temperature",
+    "temperaturePrompt": "Higher values produce more diverse output, lower values produce more deterministic output",
+    "temperature0": "Precise",
+    "temperature2": "Random"
+  },
+  "geminiApi": {
+    "temperature": "Temperature",
+    "topK": "Top K",
+    "topKPrompt": "Controls the number of tokens the model considers",
+    "topP": "Top P",
+    "topPPrompt": "Controls the probability threshold for model sampling"
+  },
+  "claudeApi": {
+    "maxTokens": "Max Tokens",
+    "maxTokensPrompt": "Maximum number of tokens to generate",
+    "alterUrl": "API Alternative URL",
+    "alterUrlPrompt": "Alternative URL for Claude API"
+  },
+  "chatGlm": {
+    "name": "ChatGLM",
+    "GLM-3": "GLM-3",
+    "GLM-4": "GLM-4"
+  },
+  "doubao": {
+    "name": "Doubao",
+    "modelId": "Inference Endpoint ID",
+    "modelIdPrompt": "Get from Volcengine console after creating inference endpoint, format: ep-xxx",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "Volcengine Doubao API URL, default: https://ark.cn-beijing.volces.com/api/v3"
+  },
+  "deepseek": {
+    "name": "DeepSeek",
+    "model": "Model",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "DeepSeek API URL, default: https://api.deepseek.com"
+  },
+  "chatglmApi": {
+    "name": "ChatGLM API",
+    "model": "Model",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "ChatGLM API URL, default: https://open.bigmodel.cn/api/paas/v4"
+  },
+  "qwenApi": {
+    "name": "Qwen API",
+    "model": "Model",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "Alibaba Cloud Bailian API URL, default: https://dashscope.aliyuncs.com/compatible-mode/v1"
+  },
+  "sparkApi": {
+    "name": "iFlytek Spark API",
+    "model": "Model",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "iFlytek Spark API URL"
+  },
+  "miniMax": {
+    "name": "MiniMax API",
+    "model": "Model",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "MiniMax API URL, default: https://api.minimax.chat/v1"
+  },
+  "pi": {
+    "name": "Pi",
+    "waitPiIntro": "Please click the chatbot website link below and wait for the Pi introduction to finish, then close the window."
+  },
+  "falcon": {
+    "name": "Falcon",
+    "falcon-180b": "180b",
+    "temperature": "Temperature",
+    "temperaturePrompt": "Higher values produce more diverse output",
+    "maxNewTokens": "Max New Tokens",
+    "maxNewTokensPrompt": "Maximum number of new tokens to generate",
+    "topP": "Top P",
+    "topPPrompt": "Controls the probability threshold for model sampling",
+    "repetitionPenalty": "Repetition Penalty",
+    "repetitionPenaltyPrompt": "Penalty value for controlling text repetition"
+  },
+  "groqApi": {
+    "name": "Groq Cloud",
+    "temperature": "Temperature",
+    "maxTokens": "Max Tokens"
+  },
+  "xaiApi": {
+    "name": "xAI Grok"
+  },
+  "cohereApi": {
+    "name": "Cohere"
+  },
+  "mistral": {
+    "name": "Mistral AI",
+    "model": "Model"
+  },
+  "characterAi": {
+    "name": "Character.AI",
+    "characterId": "Character ID",
+    "version": "Version",
+    "username": "Username"
+  },
+  "claudeAi": {
+    "name": "Claude.ai",
+    "org": "Organization"
+  },
+  "perplexity": {
+    "name": "Perplexity",
+    "version": "Version"
+  },
+  "poe": {
+    "name": "Poe",
+    "formkey": "Form Key"
+  },
+  "lmsys": {
+    "name": "LMSYS",
+    "model": "Model"
+  },
+  "phind": {
+    "name": "Phind",
+    "model": "Model"
+  },
+  "youChat": {
+    "name": "YouChat"
+  },
+  "skyWork": {
+    "name": "SkyWork AI",
+    "inviteToken": "Invite Code",
+    "token": "Token"
+  },
+  "spark": {
+    "name": "iFlytek Spark",
+    "version": "Version"
+  },
+  "qihoo360AiBrain": {
+    "name": "360 AI Brain",
+    "prompt": "Prompt"
+  },
+  "youChatBot": {
+    "name": "YouChat"
+  },
+  "qianWen": {
+    "name": "Tongyi Qianwen"
+  },
+  "bard": {
+    "name": "Google Bard"
+  },
+  "chatgpt": {
+    "name": "ChatGPT",
+    "refreshCycle": "Refresh Cycle (minutes)",
+    "refreshCyclePrompt": "Cycle for refreshing ChatGPT login status"
+  },
+  "bingChat": {
+    "name": "Microsoft Bing Chat"
+  },
+  "bingChatCreative": {
+    "name": "Bing Chat (Creative Mode)"
+  },
+  "bingChatBalanced": {
+    "name": "Bing Chat (Balanced Mode)"
+  },
+  "bingChatPrecise": {
+    "name": "Bing Chat (Precise Mode)"
+  },
+  "gradio": {
+    "name": "Gradio",
+    "url": "URL",
+    "fnIndex": "Function Index"
+  },
+  "huggingChat": {
+    "name": "HuggingChat"
+  },
+  "moss": {
+    "name": "MOSS"
+  },
+  "actions": {
+    "name": "Quick Actions",
+    "newPrompt": "New Prompt",
+    "editPrompt": "Edit Prompt",
+    "deletePrompt": "Delete Prompt",
+    "summarize": "Summarize",
+    "summarize1": "Summarize 1"
+  },
+  "info": {
+    "title": "About ChatALL",
+    "appName": "ChatALL",
+    "description": "Concurrently chat with multiple AI bots to discover the best answers",
+    "version": "Version",
+    "sourceCode": "Source Code",
+    "bugReport": "Bug Report",
+    "disclaimer": "Disclaimer",
+    "disclaimerContent": "ChatALL will not upload your conversations to any server. All chat history, settings, and login data are stored locally on your computer."
+  },
+  "tabs": {
+    "chat": "Chat",
+    "bots": "Bots",
+    "prompts": "Prompts",
+    "actions": "Actions"
+  },
+  "bots": {
+    "favBots": "Favorite Bots",
+    "allBots": "All Bots",
+    "free": "Free",
+    "paid": "Paid API",
+    "api": "API",
+    "web": "Web Access",
+    "madeInChina": "Made in China",
+    "recommended": "Recommended"
+  },
+  "login": {
+    "loginRequired": "Login Required",
+    "login": "Login",
+    "logout": "Logout",
+    "loginTip": "Click the login button to login in a new window",
+    "logoutTip": "Click the logout button to clear login status"
+  },
+  "download": {
+    "name": "Download ChatALL",
+    "windows": "Windows",
+    "macos": "macOS",
+    "linux": "Linux"
+  },
+  "confirm": {
+    "reset": "Are you sure you want to reset?",
+    "resetHint": "This action will delete all chat history and settings",
+    "clear": "Are you sure you want to clear?",
+    "clearHint": "This action will clear all selected responses"
+  }
+}
