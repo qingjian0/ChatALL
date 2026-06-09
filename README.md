@@ -4,7 +4,7 @@
 
 [Deutsch](README_DE-DE.md) | English | [Español](README_ES-ES.md) | [Français](README_FR-FR.md) | [Italian](README_IT-IT.md) | [日本語](README_JA-JP.md) | [한국어](README_KO-KR.md) | [Русский](README_RU-RU.md) | [Tiếng Việt](README_VI-VN.md) | [简体中文](README_ZH-CN.md)
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ai-shifu/ChatALL)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/qingjian0/ChatALL)
 
 </div>
 
@@ -14,7 +14,7 @@
 
 ## Features
 
-Large Language Models (LLMs) based AI bots are amazing. However, their behavior can be random and different bots excel at different tasks. If you want the best experience, don't try them one by one. ChatALL (Chinese name: 齐叨) can send prompt to several AI bots concurrently, help you to discover the best results. All you need to do is [download, install](https://github.com/ai-shifu/ChatALL/releases) and ask.
+Large Language Models (LLMs) based AI bots are amazing. However, their behavior can be random and different bots excel at different tasks. If you want the best experience, don't try them one by one. ChatALL (Chinese name: 齐叨) can send prompt to several AI bots concurrently, help you to discover the best results. All you need to do is [download, install](https://github.com/qingjian0/ChatALL/releases) and ask.
 
 ### Is this you?
 
@@ -29,40 +29,43 @@ Typical users of ChatALL are:
 | AI Bots                                                                        | Web Access  | API         | Notes                                       |
 | ------------------------------------------------------------------------------ | ----------- | ----------- | ------------------------------------------- |
 | [360 AI Brain](https://ai.360.cn/)                                             | Yes         | No API      |                                             |
-| [Baidu ERNIE](https://yiyan.baidu.com/)                                        | No          | Yes         |                                             |
+| [Baidu ERNIE / 文心一言](https://yiyan.baidu.com/)                             | Yes         | Yes         | Qianfan 4.0, Turbo included                 |
 | [Character.AI](https://character.ai/)                                          | Yes         | No API      |                                             |
-| [ChatGLM2 6B & 130B](https://chatglm.cn/)                                      | Yes         | No API      | No Login required                           |
-| [ChatGPT](https://chatgpt.com)                                             | Yes         | Yes         | Web Browsing, Azure OpenAI service included |
-| [Claude](https://www.anthropic.com/claude)                                     | Yes         | Yes         |                                             |
+| [ChatGLM / 智谱 AI](https://chatglm.cn/)                                       | Yes         | Yes         | GLM-4, GLM-3 included                       |
+| [ChatGPT](https://chatgpt.com)                                                 | Yes         | Yes         | GPT-3.5, GPT-4, o1, o3, o4, Azure included  |
+| [Claude / 克劳德](https://www.anthropic.com/claude)                            | Yes         | Yes         | Claude 2.0, 2.1, 3.5, 3.7, Opus, Sonnet, Haiku |
 | [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/) | Yes         | No API      |                                             |
 | [Cohere Aya 23](https://cohere.com/blog/aya23)                                 | No          | Yes         |                                             |
-| [Cohere Command R Models](https://cohere.com/command)                          | No          | Yes         |                                             |
+| [Cohere Command R Models](https://cohere.com/command)                          | No          | Yes         | Command R, R+, Light included               |
 | [Copilot](https://copilot.microsoft.com/)                                      | Yes         | No API      |                                             |
+| [DeepSeek](https://chat.deepseek.com/)                                         | Yes         | Yes         | DeepSeek-V3, Chat, Reasoner included        |
 | [Dedao Learning Assistant](https://ai.dedao.cn/)                               | Coming soon | No API      |                                             |
+| [Doubao / 豆包](https://www.doubao.com/)                                       | Yes         | Yes         |                                             |
 | [Falcon 180B](https://huggingface.co/tiiuae/falcon-180B-chat)                  | Yes         | No API      |                                             |
-| [Gemini](https://gemini.google.com/)                                           | Yes         | Yes         |                                             |
+| [Gemini](https://gemini.google.com/)                                           | Yes         | Yes         | 1.0, 1.5, 2.0, Flash/Pro included          |
 | [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/)  | Yes         | No API      |                                             |
 | [Gradio](https://gradio.app/)                                                  | Yes         | No API      | For Hugging Face space/self-deployed models |
-| [Groq Cloud](https://console.groq.com/docs/models)                             | No          | Yes         |                                             |
+| [Groq Cloud](https://console.groq.com/docs/models)                             | No          | Yes         | Llama 3, 4, Gemma included                  |
 | [HuggingChat](https://huggingface.co/chat/)                                    | Yes         | No API      |                                             |
-| [iFLYTEK SPARK](http://xinghuo.xfyun.cn/)                                      | Yes         | Coming soon |                                             |
-| [Kimi](https://kimi.moonshot.cn/               )                               | Yes         | No API      |                                             |
+| [iFLYTEK SPARK / 讯飞星火](http://xinghuo.xfyun.cn/)                          | Yes         | Yes         |                                             |
+| [Kimi](https://kimi.moonshot.cn/)                                              | Yes         | No API      |                                             |
 | [Llama 2 13B & 70B](https://ai.meta.com/llama/)                                | Yes         | No API      |                                             |
+| [MiniMax / 海螺 AI](https://hailuoai.com/)                                     | Yes         | Yes         |                                             |
 | [MOSS](https://moss.fastnlp.top/)                                              | Yes         | No API      |                                             |
 | [Perplexity](https://www.perplexity.ai/)                                       | Yes         | No API      |                                             |
 | [Phind](https://www.phind.com/)                                                | Yes         | No API      |                                             |
 | [Pi](https://pi.ai)                                                            | Yes         | No API      |                                             |
 | [Poe](https://poe.com/)                                                        | Yes         | Coming soon |                                             |
+| [Qwen / 通义千问](http://tongyi.aliyun.com/)                                   | Yes         | Yes         |                                             |
 | [SkyWork](https://neice.tiangong.cn/)                                          | Yes         | Coming soon |                                             |
-| [Tongyi Qianwen](http://tongyi.aliyun.com/)                                    | Yes         | Coming soon |                                             |
 | [Vicuna 13B & 33B](https://lmsys.org/blog/2023-03-30-vicuna/)                  | Yes         | No API      | No Login required                           |
 | [WizardLM 70B](https://github.com/nlpxucan/WizardLM)                           | Yes         | No API      |                                             |
-| [xAI Grok](https://x.ai)                                                       | No          | Yes         |                                             |
+| [xAI Grok](https://x.ai)                                                       | No          | Yes         | Grok 2, 3, 3 Mini included                  |
 | [YouChat](https://you.com/)                                                    | Yes         | No API      |                                             |
 | [You](https://you.com/)                                                        | Yes         | No API      |                                             |
 | [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)              | Yes         | No API      |                                             |
 
-More is coming. Upvote your favorite bots in [these issues](https://github.com/ai-shifu/ChatALL/labels/more%20LLMs).
+More is coming. Upvote your favorite bots in [these issues](https://github.com/qingjian0/ChatALL/labels/more%20LLMs).
 
 ### Note on Web-connected Bot Reliability
 
@@ -108,7 +111,7 @@ ChatALL is a client, not a proxy. Therefore, you must:
 
 ## Download / Install
 
-Download from https://github.com/ai-shifu/ChatALL/releases
+Download from https://github.com/qingjian0/ChatALL/releases
 
 ### On Windows
 
@@ -149,13 +152,13 @@ You can reset ChatALL by deleting the following directories:
 - Linux: `/home/<user>/.config/chatall/`
 - macOS: `/Users/<user>/Library/Application Support/chatall/`
 
-If the problem persists, please [submit an issue](https://github.com/ai-shifu/ChatALL/issues).
+If the problem persists, please [submit an issue](https://github.com/qingjian0/ChatALL/issues).
 
 ## For developers
 
 ### Contribute a Bot
 
-[The guide](https://github.com/ai-shifu/ChatALL/wiki/%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84-AI-%E5%AF%B9%E8%AF%9D%E6%9C%BA%E5%99%A8%E4%BA%BA) may help you.
+[The guide](https://github.com/qingjian0/ChatALL/wiki/%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84-AI-%E5%AF%B9%E8%AF%9D%E6%9C%BA%E5%99%A8%E4%BA%BA) may help you.
 
 ### Run
 
@@ -182,8 +185,8 @@ npm run electron:build -- -wml --x64 --arm64
 
 ### Contributors
 
-<a href="https://github.com/ai-shifu/ChatALL/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ai-shifu/ChatALL" />
+<a href="https://github.com/qingjian0/ChatALL/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=qingjian0/ChatALL" />
 </a>
 
 ### Others
