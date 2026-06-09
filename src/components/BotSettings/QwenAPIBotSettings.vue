@@ -1,10 +1,11 @@
 <template>
-  <CommonBotSettings
+   <CommonBotSettings
     :settings="settings"
     :brand-id="brandId"
     mutation-type="setQwenApi"
     :watcher="watcher"
-  ></CommonBotSettings>
+  ></CommonBotSettings
+  >
 </template>
 
 <script>
@@ -81,3 +82,4 @@ export default {
   },
 };
 </script>
+

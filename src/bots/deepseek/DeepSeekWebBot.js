@@ -28,7 +28,7 @@ export default class DeepSeekWebBot extends Bot {
     try {
       const response = await axios.get(
         "https://chat.deepseek.com/api/user/info",
-        this.getAuthHeader()
+        this.getAuthHeader(),
       );
       available = response.data?.code === 0;
     } catch (error) {
@@ -42,20 +42,17 @@ export default class DeepSeekWebBot extends Bot {
 
     return new Promise((resolve, reject) => {
       try {
-        const source = new SSE(
-          `https://chat.deepseek.com/api/chat/stream`,
-          {
-            headers: {
-              ...this.getAuthHeader().headers,
-              "Content-Type": "application/json",
-            },
-            payload: JSON.stringify({
-              query: prompt,
-              conversation_id: context.conversation_id || "",
-              parent_msg_id: context.msg_id || "",
-            }),
-          }
-        );
+        const source = new SSE(`https://chat.deepseek.com/api/chat/stream`, {
+          headers: {
+            ...this.getAuthHeader().headers,
+            "Content-Type": "application/json",
+          },
+          payload: JSON.stringify({
+            query: prompt,
+            conversation_id: context.conversation_id || "",
+            parent_msg_id: context.msg_id || "",
+          }),
+        });
 
         let text = "";
         source.addEventListener("message", (event) => {
@@ -95,7 +92,7 @@ export default class DeepSeekWebBot extends Bot {
       .post(
         "https://chat.deepseek.com/api/chat/conversation",
         {},
-        this.getAuthHeader()
+        this.getAuthHeader(),
       )
       .then((response) => {
         context = {

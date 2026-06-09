@@ -29,7 +29,8 @@ export default class QwenAPIBot extends LangChainBot {
       modelName: modelId || "qwen-plus",
       temperature: temperature ?? 0.7,
       configuration: {
-        basePath: baseUrl || "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        basePath:
+          baseUrl || "https://dashscope.aliyuncs.com/compatible-mode/v1",
       },
       streaming: true,
     });
