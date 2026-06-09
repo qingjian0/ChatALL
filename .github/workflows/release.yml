@@ -28,12 +28,21 @@ jobs:
       - name: Build and release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CSC_LINK: ${{ secrets.MAC_CERTS }}
-          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
+          MAC_CERTS: ${{ secrets.MAC_CERTS }}
+          MAC_CERTS_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
           export PYTHON_PATH=`which python`
+          # Only enable code signing if MAC_CERTS is set to a valid .p12 file path
+          if [ -n "$MAC_CERTS" ] && [ -f "$MAC_CERTS" ]; then
+            export CSC_LINK="$MAC_CERTS"
+            export CSC_KEY_PASSWORD="$MAC_CERTS_PASSWORD"
+            export APPLE_ID="$APPLE_ID"
+            export APPLE_APP_SPECIFIC_PASSWORD="$APPLE_APP_SPECIFIC_PASSWORD"
+          else
+            echo "CSC_LINK not a valid .p12 file path - skipping code signing"
+          fi
           npm run release-macos
 
   build-and-release-ubuntu:
