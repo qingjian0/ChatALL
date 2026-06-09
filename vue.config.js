@@ -17,10 +17,6 @@ module.exports = defineConfig({
           category: "public.app-category.utilities",
           target: "default",
           icon: "src/assets/icon.icns",
-          hardenedRuntime: true,
-          notarize: {
-            teamId: "M4934264PN",
-          },
         },
         win: {
           target: [
@@ -37,12 +33,6 @@ module.exports = defineConfig({
         nsis: {
           oneClick: false,
           allowToChangeInstallationDirectory: true,
-        },
-        publish: {
-          provider: "github",
-          owner: "qingjian0",
-          repo: "ChatALL",
-          releaseType: "release",
         },
       },
       /**
