@@ -38,11 +38,6 @@ module.exports = defineConfig({
           oneClick: false,
           allowToChangeInstallationDirectory: true,
         },
-        publish: {
-          provider: "github",
-          owner: "qingjian0",
-          repo: "ChatALL",
-        },
       },
       /**
        * work around to fix this issue: https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/1647#issuecomment-1019400838
