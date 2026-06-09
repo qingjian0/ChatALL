@@ -93,12 +93,18 @@ export default createStore({
       temperature: 0.7,
       pastRounds: 5,
     },
+    doubaoWeb: {
+      token: "",
+    },
     deepseek: {
       apiKey: "",
       modelId: "deepseek-chat",
       baseUrl: "",
       temperature: 0.7,
       pastRounds: 5,
+    },
+    deepseekWeb: {
+      token: "",
     },
     chatglmApi: {
       apiKey: "",
@@ -127,6 +133,9 @@ export default createStore({
       baseUrl: "",
       temperature: 0.7,
       pastRounds: 5,
+    },
+    miniMaxWeb: {
+      token: "",
     },
     qianWen: {
       xsrfToken: "",
@@ -286,8 +295,17 @@ export default createStore({
     setDoubao(state, values) {
       state.doubao = { ...state.doubao, ...values };
     },
+    setDoubaoWeb(state, token) {
+      state.doubaoWeb.token = token;
+    },
     setDeepSeek(state, values) {
       state.deepseek = { ...state.deepseek, ...values };
+    },
+    setDeepSeekWeb(state, token) {
+      state.deepseekWeb.token = token;
+    },
+    setMiniMaxWeb(state, token) {
+      state.miniMaxWeb.token = token;
     },
     setChatGLMApi(state, values) {
       state.chatglmApi = { ...state.chatglmApi, ...values };

@@ -67,13 +67,16 @@ import Grok2APIBot from "./xai/Grok2APIBot";
 import Grok3APIBot from "./xai/Grok3APIBot";
 import Grok3MiniAPIBot from "./xai/Grok3MiniAPIBot";
 import DoubaoBot from "./doubao/DoubaoBot";
+import DoubaoWebBot from "./doubao/DoubaoWebBot";
 import DeepSeekBot from "./deepseek/DeepSeekBot";
+import DeepSeekWebBot from "./deepseek/DeepSeekWebBot";
 import DeepSeekChatBot from "./deepseek/DeepSeekChatBot";
 import DeepSeekReasonerBot from "./deepseek/DeepSeekReasonerBot";
 import ChatGLMAPIBot from "./zhipu/ChatGLMAPIBot";
 import QwenAPIBot from "./qwen/QwenAPIBot";
 import SparkAPIBot from "./spark/SparkAPIBot";
 import MiniMaxAPIBot from "./minimax/MiniMaxAPIBot";
+import MiniMaxWebBot from "./minimax/MiniMaxWebBot";
 
 const all = [
   Qihoo360AIBrainBot.getInstance(),
@@ -130,13 +133,16 @@ const all = [
   Llama4MaverickGroqAPIBot.getInstance(),
   KimiBot.getInstance(),
   DoubaoBot.getInstance(),
+  DoubaoWebBot.getInstance(),
   DeepSeekBot.getInstance(),
+  DeepSeekWebBot.getInstance(),
   DeepSeekChatBot.getInstance(),
   DeepSeekReasonerBot.getInstance(),
   ChatGLMAPIBot.getInstance(),
   QwenAPIBot.getInstance(),
   SparkAPIBot.getInstance(),
   MiniMaxAPIBot.getInstance(),
+  MiniMaxWebBot.getInstance(),
   MistralBot.getInstance(),
   MOSSBot.getInstance(),
   HuggingChatBot.getInstance(),
@@ -193,6 +199,9 @@ export const botTags = {
     bots.getBotByClassName("PhindBot"),
     bots.getBotByClassName("PiBot"),
     bots.getBotByClassName("KimiBot"),
+    bots.getBotByClassName("DoubaoWebBot"),
+    bots.getBotByClassName("DeepSeekWebBot"),
+    bots.getBotByClassName("MiniMaxWebBot"),
   ],
   paid: [
     bots.getBotByClassName("ChatGPT4Bot"),
@@ -255,6 +264,11 @@ export const botTags = {
     bots.getBotByClassName("SparkAPIBot"),
     bots.getBotByClassName("MiniMaxAPIBot"),
   ],
+  web: [
+    bots.getBotByClassName("DoubaoWebBot"),
+    bots.getBotByClassName("DeepSeekWebBot"),
+    bots.getBotByClassName("MiniMaxWebBot"),
+  ],
   madeInChina: [
     bots.getBotByClassName("Qihoo360AIBrainBot"),
     bots.getBotByClassName("QianWenBot"),
@@ -268,13 +282,16 @@ export const botTags = {
     bots.getBotByClassName("ChatGLM4Bot"),
     bots.getBotByClassName("KimiBot"),
     bots.getBotByClassName("DoubaoBot"),
+    bots.getBotByClassName("DoubaoWebBot"),
     bots.getBotByClassName("DeepSeekBot"),
+    bots.getBotByClassName("DeepSeekWebBot"),
     bots.getBotByClassName("DeepSeekChatBot"),
     bots.getBotByClassName("DeepSeekReasonerBot"),
     bots.getBotByClassName("ChatGLMAPIBot"),
     bots.getBotByClassName("QwenAPIBot"),
     bots.getBotByClassName("SparkAPIBot"),
     bots.getBotByClassName("MiniMaxAPIBot"),
+    bots.getBotByClassName("MiniMaxWebBot"),
   ],
 };
 export default bots;

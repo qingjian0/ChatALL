@@ -355,6 +355,15 @@ function createNewWindow({ url, userAgent = "", loginScript }) {
           access_token,
           refresh_token,
         });
+      } else if (url.startsWith("https://www.doubao.com/")) {
+        const token = await getCookie("doubao_token");
+        mainWindow.webContents.send("DOUBAO-WEB-TOKEN", token);
+      } else if (url.startsWith("https://chat.deepseek.com/")) {
+        const token = await getCookie("deepseek_token");
+        mainWindow.webContents.send("DEEPSEEK-WEB-TOKEN", token);
+      } else if (url.startsWith("https://hailuoai.com/")) {
+        const token = await getCookie("minimax_token");
+        mainWindow.webContents.send("MINIMAX-WEB-TOKEN", token);
       }
     } catch (err) {
       console.error(err);

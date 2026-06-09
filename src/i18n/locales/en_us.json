@@ -79,6 +79,8 @@
   },
   "doubao": {
     "name": "Doubao",
+    "web": "Doubao Web",
+    "api": "Doubao API",
     "modelId": "Inference Endpoint ID",
     "modelIdPrompt": "Get from Volcengine console after creating inference endpoint, format: ep-xxx",
     "baseUrl": "API URL",
@@ -86,6 +88,8 @@
   },
   "deepseek": {
     "name": "DeepSeek",
+    "web": "DeepSeek Web",
+    "api": "DeepSeek API",
     "model": "Model",
     "baseUrl": "API URL",
     "baseUrlPrompt": "DeepSeek API URL, default: https://api.deepseek.com"
@@ -109,7 +113,9 @@
     "baseUrlPrompt": "iFlytek Spark API URL"
   },
   "miniMax": {
-    "name": "MiniMax API",
+    "name": "MiniMax",
+    "web": "MiniMax Web",
+    "api": "MiniMax API",
     "model": "Model",
     "baseUrl": "API URL",
     "baseUrlPrompt": "MiniMax API URL, default: https://api.minimax.chat/v1"

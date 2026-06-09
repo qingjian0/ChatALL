@@ -79,6 +79,8 @@
   },
   "doubao": {
     "name": "豆包",
+    "web": "豆包网页版",
+    "api": "豆包 API",
     "modelId": "推理接入点 ID",
     "modelIdPrompt": "在火山引擎控制台创建推理接入点后获取，格式如 ep-xxx",
     "baseUrl": "API 地址",
@@ -86,6 +88,8 @@
   },
   "deepseek": {
     "name": "DeepSeek",
+    "web": "DeepSeek 网页版",
+    "api": "DeepSeek API",
     "model": "模型",
     "baseUrl": "API 地址",
     "baseUrlPrompt": "DeepSeek API 地址，默认为 https://api.deepseek.com"
@@ -109,7 +113,9 @@
     "baseUrlPrompt": "讯飞星火 API 地址"
   },
   "miniMax": {
-    "name": "MiniMax API",
+    "name": "MiniMax",
+    "web": "MiniMax 网页版",
+    "api": "MiniMax API",
     "model": "模型",
     "baseUrl": "API 地址",
     "baseUrlPrompt": "MiniMax API 地址，默认为 https://api.minimax.chat/v1"
