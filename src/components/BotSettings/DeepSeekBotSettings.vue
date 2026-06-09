@@ -9,7 +9,7 @@
 
 <script>
 import _bots from "@/bots";
-import Bot from "@/bots/DeepSeekBot";
+import Bot from "@/bots/deepseek/DeepSeekBot";
 import CommonBotSettings from "@/components/BotSettings/CommonBotSettings.vue";
 import { Type } from "./settings.const";
 

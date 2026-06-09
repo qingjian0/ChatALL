@@ -2,14 +2,14 @@
   <CommonBotSettings
     :settings="settings"
     :brand-id="brandId"
-    mutation-type="setDoubao"
+    mutation-type="setSparkApi"
     :watcher="watcher"
   ></CommonBotSettings>
 </template>
 
 <script>
 import _bots from "@/bots";
-import Bot from "@/bots/doubao/DoubaoBot";
+import Bot from "@/bots/spark/SparkAPIBot";
 import CommonBotSettings from "@/components/BotSettings/CommonBotSettings.vue";
 import { Type } from "./settings.const";
 
@@ -19,14 +19,17 @@ const settings = [
     name: "apiKey",
     title: "common.apiKey",
     description: "settings.secretPrompt",
-    placeholder: "从火山引擎控制台获取 API Key",
+    placeholder: "从讯飞星火控制台获取 API Key",
   },
   {
-    type: Type.Text,
+    type: Type.Select,
     name: "modelId",
-    title: "doubao.modelId",
-    description: "doubao.modelIdPrompt",
-    placeholder: "推理接入点 ID，例如 ep-xxx",
+    title: "sparkApi.model",
+    options: [
+      { value: "generalv3.5", title: "generalv3.5 (Spark 4.0 Ultra)" },
+      { value: "generalv3", title: "generalv3 (Spark 3.5)" },
+      { value: "pro-128k", title: "pro-128k (Spark 3.5 Pro 128K)" },
+    ],
   },
   {
     type: Type.Slider,
@@ -53,9 +56,9 @@ const settings = [
   {
     type: Type.Text,
     name: "baseUrl",
-    title: "doubao.baseUrl",
-    description: "doubao.baseUrlPrompt",
-    placeholder: "https://ark.cn-beijing.volces.com/api/v3",
+    title: "sparkApi.baseUrl",
+    description: "sparkApi.baseUrlPrompt",
+    placeholder: "https://spark-api-open.xf-yunai.cn/v1",
   },
 ];
 export default {

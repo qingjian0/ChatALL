@@ -2,14 +2,14 @@
   <CommonBotSettings
     :settings="settings"
     :brand-id="brandId"
-    mutation-type="setDoubao"
+    mutation-type="setMiniMaxApi"
     :watcher="watcher"
   ></CommonBotSettings>
 </template>
 
 <script>
 import _bots from "@/bots";
-import Bot from "@/bots/doubao/DoubaoBot";
+import Bot from "@/bots/minimax/MiniMaxAPIBot";
 import CommonBotSettings from "@/components/BotSettings/CommonBotSettings.vue";
 import { Type } from "./settings.const";
 
@@ -19,14 +19,17 @@ const settings = [
     name: "apiKey",
     title: "common.apiKey",
     description: "settings.secretPrompt",
-    placeholder: "从火山引擎控制台获取 API Key",
+    placeholder: "从MiniMax星河大模型获取 API Key",
   },
   {
-    type: Type.Text,
+    type: Type.Select,
     name: "modelId",
-    title: "doubao.modelId",
-    description: "doubao.modelIdPrompt",
-    placeholder: "推理接入点 ID，例如 ep-xxx",
+    title: "miniMax.model",
+    options: [
+      { value: "abab6.5s-chat", title: "abab6.5s-chat" },
+      { value: "abab6.5-chat", title: "abab6.5-chat" },
+      { value: "abab6-chat", title: "abab6-chat" },
+    ],
   },
   {
     type: Type.Slider,
@@ -53,9 +56,9 @@ const settings = [
   {
     type: Type.Text,
     name: "baseUrl",
-    title: "doubao.baseUrl",
-    description: "doubao.baseUrlPrompt",
-    placeholder: "https://ark.cn-beijing.volces.com/api/v3",
+    title: "miniMax.baseUrl",
+    description: "miniMax.baseUrlPrompt",
+    placeholder: "https://api.minimax.chat/v1",
   },
 ];
 export default {

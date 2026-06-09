@@ -2,14 +2,14 @@
   <CommonBotSettings
     :settings="settings"
     :brand-id="brandId"
-    mutation-type="setDoubao"
+    mutation-type="setQwenApi"
     :watcher="watcher"
   ></CommonBotSettings>
 </template>
 
 <script>
 import _bots from "@/bots";
-import Bot from "@/bots/doubao/DoubaoBot";
+import Bot from "@/bots/qwen/QwenAPIBot";
 import CommonBotSettings from "@/components/BotSettings/CommonBotSettings.vue";
 import { Type } from "./settings.const";
 
@@ -19,14 +19,18 @@ const settings = [
     name: "apiKey",
     title: "common.apiKey",
     description: "settings.secretPrompt",
-    placeholder: "从火山引擎控制台获取 API Key",
+    placeholder: "从阿里云百炼控制台获取 API Key",
   },
   {
-    type: Type.Text,
+    type: Type.Select,
     name: "modelId",
-    title: "doubao.modelId",
-    description: "doubao.modelIdPrompt",
-    placeholder: "推理接入点 ID，例如 ep-xxx",
+    title: "qwenApi.model",
+    options: [
+      { value: "qwen-turbo", title: "qwen-turbo" },
+      { value: "qwen-plus", title: "qwen-plus" },
+      { value: "qwen-max", title: "qwen-max" },
+      { value: "qwen-long", title: "qwen-long" },
+    ],
   },
   {
     type: Type.Slider,
@@ -53,9 +57,9 @@ const settings = [
   {
     type: Type.Text,
     name: "baseUrl",
-    title: "doubao.baseUrl",
-    description: "doubao.baseUrlPrompt",
-    placeholder: "https://ark.cn-beijing.volces.com/api/v3",
+    title: "qwenApi.baseUrl",
+    description: "qwenApi.baseUrlPrompt",
+    placeholder: "https://dashscope.aliyuncs.com/compatible-mode/v1",
   },
 ];
 export default {

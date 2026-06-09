@@ -2,14 +2,14 @@
   <CommonBotSettings
     :settings="settings"
     :brand-id="brandId"
-    mutation-type="setDoubao"
+    mutation-type="setChatGLMApi"
     :watcher="watcher"
   ></CommonBotSettings>
 </template>
 
 <script>
 import _bots from "@/bots";
-import Bot from "@/bots/doubao/DoubaoBot";
+import Bot from "@/bots/zhipu/ChatGLMAPIBot";
 import CommonBotSettings from "@/components/BotSettings/CommonBotSettings.vue";
 import { Type } from "./settings.const";
 
@@ -19,14 +19,18 @@ const settings = [
     name: "apiKey",
     title: "common.apiKey",
     description: "settings.secretPrompt",
-    placeholder: "从火山引擎控制台获取 API Key",
+    placeholder: "从智谱AI控制台获取",
   },
   {
-    type: Type.Text,
+    type: Type.Select,
     name: "modelId",
-    title: "doubao.modelId",
-    description: "doubao.modelIdPrompt",
-    placeholder: "推理接入点 ID，例如 ep-xxx",
+    title: "chatglmApi.model",
+    options: [
+      { value: "glm-4", title: "glm-4" },
+      { value: "glm-4-plus", title: "glm-4-plus" },
+      { value: "glm-4-flash", title: "glm-4-flash" },
+      { value: "glm-3-turbo", title: "glm-3-turbo" },
+    ],
   },
   {
     type: Type.Slider,
@@ -53,9 +57,9 @@ const settings = [
   {
     type: Type.Text,
     name: "baseUrl",
-    title: "doubao.baseUrl",
-    description: "doubao.baseUrlPrompt",
-    placeholder: "https://ark.cn-beijing.volces.com/api/v3",
+    title: "chatglmApi.baseUrl",
+    description: "chatglmApi.baseUrlPrompt",
+    placeholder: "https://open.bigmodel.cn/api/paas/v4",
   },
 ];
 export default {

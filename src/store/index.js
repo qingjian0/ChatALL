@@ -100,6 +100,34 @@ export default createStore({
       temperature: 0.7,
       pastRounds: 5,
     },
+    chatglmApi: {
+      apiKey: "",
+      modelId: "glm-4",
+      baseUrl: "",
+      temperature: 0.7,
+      pastRounds: 5,
+    },
+    qwenApi: {
+      apiKey: "",
+      modelId: "qwen-plus",
+      baseUrl: "",
+      temperature: 0.7,
+      pastRounds: 5,
+    },
+    sparkApi: {
+      apiKey: "",
+      modelId: "generalv3.5",
+      baseUrl: "",
+      temperature: 0.7,
+      pastRounds: 5,
+    },
+    miniMaxApi: {
+      apiKey: "",
+      modelId: "abab6.5s-chat",
+      baseUrl: "",
+      temperature: 0.7,
+      pastRounds: 5,
+    },
     qianWen: {
       xsrfToken: "",
     },
@@ -260,6 +288,18 @@ export default createStore({
     },
     setDeepSeek(state, values) {
       state.deepseek = { ...state.deepseek, ...values };
+    },
+    setChatGLMApi(state, values) {
+      state.chatglmApi = { ...state.chatglmApi, ...values };
+    },
+    setQwenApi(state, values) {
+      state.qwenApi = { ...state.qwenApi, ...values };
+    },
+    setSparkApi(state, values) {
+      state.sparkApi = { ...state.sparkApi, ...values };
+    },
+    setMiniMaxApi(state, values) {
+      state.miniMaxApi = { ...state.miniMaxApi, ...values };
     },
     setWenxinQianfan(state, values) {
       state.wenxinQianfan = { ...state.wenxinQianfan, ...values };
