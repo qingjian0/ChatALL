@@ -294,7 +294,49 @@
     "name": "DeepSeek",
     "model": "模型",
     "baseUrl": "API 地址",
-    "baseUrlPrompt": "DeepSeek API 地址，默认为 https://api.deepseek.com"
+    "baseUrlPrompt": "DeepSeek API 地址，默认为 https://api.deepseek.com",
+    "deepseek-chat": "DeepSeek Chat",
+    "deepseek-reasoner": "DeepSeek Reasoner"
+  },
+  "qwenApi": {
+    "name": "通义千问 API",
+    "modelId": "模型 ID",
+    "modelIdPrompt": "通义千问模型 ID，如 qwen-plus、qwen-max 等",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "通义千问 API 地址，默认为 https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "temperature": "Temperature",
+    "temperaturePrompt": "Temperature 越高，生成的文本越有创造性"
+  },
+  "chatglmApi": {
+    "name": "智谱 AI API",
+    "modelId": "模型 ID",
+    "modelIdPrompt": "智谱 AI 模型 ID，如 glm-4、glm-4-flash 等",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "智谱 AI API 地址，默认为 https://open.bigmodel.cn/api/paas/v4",
+    "temperature": "Temperature",
+    "temperaturePrompt": "Temperature 越高，生成的文本越有创造性"
+  },
+  "sparkApi": {
+    "name": "讯飞星火 API",
+    "modelId": "模型 ID",
+    "modelIdPrompt": "讯飞星火模型 ID，如 generalv3.5、generalv3 等",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "讯飞星火 API 地址，默认为 https://spark-api.xf-yun.com"
+  },
+  "miniMax": {
+    "name": "MiniMax"
+  },
+  "miniMaxApi": {
+    "name": "MiniMax API",
+    "modelId": "模型 ID",
+    "modelIdPrompt": "MiniMax 模型 ID，如 abab6.5s-chat、abab6.5-chat 等",
+    "baseUrl": "API 地址",
+    "baseUrlPrompt": "MiniMax API 地址，默认为 https://api.minimax.chat/v1",
+    "temperature": "Temperature",
+    "temperaturePrompt": "Temperature 越高，生成的文本越有创造性"
+  },
+  "miniMaxWeb": {
+    "name": "海螺问问"
   },
   "pi": {
     "name": "Pi",

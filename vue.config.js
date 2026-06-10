@@ -5,7 +5,7 @@ module.exports = defineConfig({
   pluginOptions: {
     electronBuilder: {
       mainProcessFile: "src/background.js",
-      preload: "src/preload.js",
+      mainProcessPreload: "src/preload.js",
       builderOptions: {
         // options placed here will be merged with default configuration and passed to electron-builder
         appId: "ai.chatall",

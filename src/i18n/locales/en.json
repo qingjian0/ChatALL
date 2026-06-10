@@ -294,7 +294,49 @@
     "name": "DeepSeek",
     "model": "Model",
     "baseUrl": "API URL",
-    "baseUrlPrompt": "DeepSeek API URL, default: https://api.deepseek.com"
+    "baseUrlPrompt": "DeepSeek API URL, default: https://api.deepseek.com",
+    "deepseek-chat": "DeepSeek Chat",
+    "deepseek-reasoner": "DeepSeek Reasoner"
+  },
+  "qwenApi": {
+    "name": "Qwen API",
+    "modelId": "Model ID",
+    "modelIdPrompt": "Qwen model ID, such as qwen-plus, qwen-max, etc.",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "Qwen API URL, default: https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "temperature": "Temperature",
+    "temperaturePrompt": "The higher the temperature, the more creative the text"
+  },
+  "chatglmApi": {
+    "name": "ChatGLM API",
+    "modelId": "Model ID",
+    "modelIdPrompt": "ChatGLM model ID, such as glm-4, glm-4-flash, etc.",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "ChatGLM API URL, default: https://open.bigmodel.cn/api/paas/v4",
+    "temperature": "Temperature",
+    "temperaturePrompt": "The higher the temperature, the more creative the text"
+  },
+  "sparkApi": {
+    "name": "iFlytek Spark API",
+    "modelId": "Model ID",
+    "modelIdPrompt": "iFlytek Spark model ID, such as generalv3.5, generalv3, etc.",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "iFlytek Spark API URL, default: https://spark-api.xf-yun.com"
+  },
+  "miniMax": {
+    "name": "MiniMax"
+  },
+  "miniMaxApi": {
+    "name": "MiniMax API",
+    "modelId": "Model ID",
+    "modelIdPrompt": "MiniMax model ID, such as abab6.5s-chat, abab6.5-chat, etc.",
+    "baseUrl": "API URL",
+    "baseUrlPrompt": "MiniMax API URL, default: https://api.minimax.chat/v1",
+    "temperature": "Temperature",
+    "temperaturePrompt": "The higher the temperature, the more creative the text"
+  },
+  "miniMaxWeb": {
+    "name": "Hailuo AI"
   },
   "pi": {
     "name": "Pi",
