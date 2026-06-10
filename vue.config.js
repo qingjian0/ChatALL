@@ -17,10 +17,6 @@ module.exports = defineConfig({
           category: "public.app-category.utilities",
           target: "default",
           icon: "src/assets/icon.icns",
-          hardenedRuntime: true,
-          notarize: {
-            teamId: "M4934264PN",
-          },
         },
         win: {
           target: [
