@@ -1,15 +1,21 @@
 class LRUCache {
-  constructor(maxSize = 100) {
+  constructor(maxSize = 100, name = 'unnamed') {
     this.cache = new Map()
     this.maxSize = maxSize
+    this.name = name
+    this.stats = { hits: 0, misses: 0, evictions: 0, sets: 0 }
   }
 
   get(key) {
-    if (!this.cache.has(key)) return null
+    if (!this.cache.has(key)) {
+      this.stats.misses++
+      return null
+    }
 
     const value = this.cache.get(key)
     this.cache.delete(key)
     this.cache.set(key, value)
+    this.stats.hits++
     return value
   }
 
@@ -19,8 +25,10 @@ class LRUCache {
     } else if (this.cache.size >= this.maxSize) {
       const firstKey = this.cache.keys().next().value
       this.cache.delete(firstKey)
+      this.stats.evictions++
     }
     this.cache.set(key, value)
+    this.stats.sets++
   }
 
   has(key) {
@@ -33,16 +41,30 @@ class LRUCache {
 
   clear() {
     this.cache.clear()
+    this.stats = { hits: 0, misses: 0, evictions: 0, sets: 0 }
   }
 
   get size() {
     return this.cache.size
   }
+
+  getStats() {
+    const total = this.stats.hits + this.stats.misses
+    return {
+      ...this.stats,
+      size: this.cache.size,
+      hitRate: total > 0 ? (this.stats.hits / total) : 0,
+    }
+  }
+
+  resetStats() {
+    this.stats = { hits: 0, misses: 0, evictions: 0, sets: 0 }
+  }
 }
 
-const chatCache = new LRUCache(50)
-const botConfigCache = new LRUCache(100)
-const apiResponseCache = new LRUCache(200)
+const chatCache = new LRUCache(50, 'chat')
+const botConfigCache = new LRUCache(100, 'botConfig')
+const apiResponseCache = new LRUCache(200, 'apiResponse')
 
 export { LRUCache, chatCache, botConfigCache, apiResponseCache }
 
@@ -124,6 +146,20 @@ export function cleanupCaches() {
       apiResponseCache.delete(key)
     }
   }
+}
+
+export function getAllCacheStats() {
+  return {
+    chat: chatCache.getStats(),
+    botConfig: botConfigCache.getStats(),
+    apiResponse: apiResponseCache.getStats(),
+  }
+}
+
+export function resetAllCacheStats() {
+  chatCache.resetStats()
+  botConfigCache.resetStats()
+  apiResponseCache.resetStats()
 }
 
 setInterval(cleanupCaches, 5 * 60 * 1000)

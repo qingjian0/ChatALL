@@ -1,113 +1,130 @@
+const SENSITIVE_KEYS = [
+  'apiKey', 'api_key', 'apikey', 'token', 'accessToken', 'access_token',
+  'refreshToken', 'refresh_token', 'secretKey', 'secret_key', 'secret',
+  'password', 'pwd', 'authorization', 'auth', 'cookie', 'cookies',
+  'privateKey', 'private_key', 'sessionId', 'session_id', 'clientSecret',
+  'client_secret', 'credentials', 'credential',
+]
+
 const SENSITIVE_PATTERNS = [
-  { pattern: /(api[Kk]ey|api[_-]?[Kk]ey|API[_-]?KEY)\s*[=:]\s*["']?([^"'\s]+)["']?/gi, replacement: "$1=***" },
-  { pattern: /(secret[Kk]ey|secret[_-]?[Kk]ey|SECRET[_-]?KEY)\s*[=:]\s*["']?([^"'\s]+)["']?/gi, replacement: "$1=***" },
-  { pattern: /(token|access[_-]?token|refresh[_-]?token)\s*[=:]\s*["']?([^"'\s]+)["']?/gi, replacement: "$1=***" },
-  { pattern: /sk-[a-zA-Z0-9]{20,}/g, replacement: "sk-***" },
-  { pattern: /pk-[a-zA-Z0-9]{20,}/g, replacement: "pk-***" },
-  { pattern: /AKIA[0-9A-Z]{16}/g, replacement: "AKIA***" },
-  { pattern: /[A-Za-z0-9+/]{40,}/g, replacement: "***" },
-];
+  { regex: /sk-[a-zA-Z0-9]{20,}/gi, replacement: 'sk-***REDACTED***' },
+  { regex: /Bearer\s+[a-zA-Z0-9\-_\.]{10,}/gi, replacement: 'Bearer ***REDACTED***' },
+  { regex: /eyJ[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+/g, replacement: '***JWT_REDACTED***' },
+  { regex: /password["'\s]*[:=]["']?[^"'\s&]+/gi, replacement: 'password":"***REDACTED***"' },
+]
 
-const SENSITIVE_FIELDS = [
-  "apiKey",
-  "azureApiKey",
-  "token",
-  "access_token",
-  "refresh_token",
-  "secretKey",
-  "xsrfToken",
-  "inviteToken",
-  "formkey",
-];
-
-function sanitizeString(input) {
-  if (typeof input !== "string") {
-    return input;
-  }
+export function redactValue(value, key) {
+  if (value == null) return value
   
-  let result = input;
-  for (const { pattern, replacement } of SENSITIVE_PATTERNS) {
-    result = result.replace(pattern, replacement);
-  }
+  const normalizedKey = String(key || '').toLowerCase()
+  const isSensitive = SENSITIVE_KEYS.some(sensitiveKey => 
+    normalizedKey.includes(sensitiveKey)
+  )
   
-  return result;
-}
-
-function sanitizeObject(obj, path = "") {
-  if (obj === null || typeof obj !== "object") {
-    return sanitizeString(obj);
-  }
-  
-  if (Array.isArray(obj)) {
-    return obj.map((item, index) => sanitizeObject(item, `${path}[${index}]`));
-  }
-  
-  const sanitized = {};
-  for (const key of Object.keys(obj)) {
-    const newPath = path ? `${path}.${key}` : key;
-    const isSensitive = SENSITIVE_FIELDS.some(
-      (field) => key.toLowerCase() === field.toLowerCase()
-    );
-    
-    if (isSensitive) {
-      sanitized[key] = "***";
-    } else {
-      sanitized[key] = sanitizeObject(obj[key], newPath);
+  if (isSensitive) {
+    if (typeof value === 'string') {
+      return maskString(value)
+    }
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      return '***'
+    }
+    if (typeof value === 'object') {
+      return '[REDACTED OBJECT]'
     }
   }
   
-  return sanitized;
-}
-
-export function sanitizeLog(data) {
-  if (typeof data === "string") {
-    return sanitizeString(data);
+  if (typeof value === 'string') {
+    return redactPatterns(value)
   }
   
-  if (data instanceof Error) {
-    return {
-      message: sanitizeString(data.message),
-      stack: sanitizeString(data.stack),
-      name: data.name,
-    };
+  return value
+}
+
+function maskString(str) {
+  if (!str || str.length <= 4) return '****'
+  const visibleStart = Math.min(2, Math.floor(str.length / 4))
+  const visibleEnd = Math.min(2, Math.floor(str.length / 4))
+  return str.slice(0, visibleStart) + '*'.repeat(Math.max(4, str.length - visibleStart - visibleEnd)) + str.slice(-visibleEnd)
+}
+
+function redactPatterns(str) {
+  let result = str
+  for (const { regex, replacement } of SENSITIVE_PATTERNS) {
+    result = result.replace(regex, replacement)
+  }
+  return result
+}
+
+export function redactObject(obj, depth = 0) {
+  if (depth > 10) return '[MAX DEPTH]'
+  
+  if (obj == null) return obj
+  if (typeof obj !== 'object') return redactValue(obj)
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => redactObject(item, depth + 1))
   }
   
-  return sanitizeObject(data);
+  const result = {}
+  for (const [key, value] of Object.entries(obj)) {
+    result[key] = redactValue(value, key)
+    if (typeof value === 'object' && value !== null && !ArrayBuffer.isView(value)) {
+      result[key] = redactObject(value, depth + 1)
+    }
+  }
+  return result
 }
 
-export function log(...args) {
-  const sanitizedArgs = args.map((arg) => sanitizeLog(arg));
-  console.log(...sanitizedArgs);
+export function safeLog(...args) {
+  const redacted = args.map(arg => {
+    if (arg == null) return arg
+    if (typeof arg === 'string') return redactPatterns(arg)
+    if (typeof arg === 'object') return redactObject(arg)
+    return arg
+  })
+  return redacted
 }
 
-export function logError(...args) {
-  const sanitizedArgs = args.map((arg) => sanitizeLog(arg));
-  console.error(...sanitizedArgs);
-}
-
-export function logWarn(...args) {
-  const sanitizedArgs = args.map((arg) => sanitizeLog(arg));
-  console.warn(...sanitizedArgs);
-}
-
-export function logInfo(...args) {
-  const sanitizedArgs = args.map((arg) => sanitizeLog(arg));
-  console.info(...sanitizedArgs);
-}
-
-export function captureError(error, context = {}) {
-  const sanitizedError = sanitizeLog(error);
-  const sanitizedContext = sanitizeLog(context);
-  
-  console.error("Error captured:", sanitizedError, sanitizedContext);
-  
-  if (typeof window !== "undefined" && window.Raven) {
-    window.Raven.captureException(error, {
-      extra: sanitizedContext,
-    });
+export function createSafeLogger(prefix = '') {
+  return {
+    log: (...args) => console.log(prefix, ...safeLog(...args)),
+    warn: (...args) => console.warn(prefix, ...safeLog(...args)),
+    error: (...args) => console.error(prefix, ...safeLog(...args)),
+    debug: (...args) => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.debug(prefix, ...safeLog(...args))
+      }
+    },
   }
 }
 
-export function stringifySanitized(obj) {
-  return JSON.stringify(sanitizeObject(obj));
+export function maskApiKey(apiKey) {
+  if (!apiKey || typeof apiKey !== 'string') return ''
+  if (apiKey.length <= 8) return '*'.repeat(apiKey.length)
+  return apiKey.slice(0, 4) + '*'.repeat(Math.max(8, apiKey.length - 8)) + apiKey.slice(-4)
+}
+
+export function maskPhone(phone) {
+  if (!phone || typeof phone !== 'string') return ''
+  const digits = phone.replace(/\D/g, '')
+  if (digits.length <= 7) return '*'.repeat(digits.length)
+  return digits.slice(0, 3) + '*'.repeat(digits.length - 7) + digits.slice(-4)
+}
+
+export function maskEmail(email) {
+  if (!email || typeof email !== 'string') return ''
+  const [username, domain] = email.split('@')
+  if (!username || !domain) return email
+  if (username.length <= 2) return '*'.repeat(username.length) + '@' + domain
+  return username[0] + '*'.repeat(Math.max(3, username.length - 2)) + username.slice(-1) + '@' + domain
+}
+
+export default {
+  redactValue,
+  redactObject,
+  safeLog,
+  createSafeLogger,
+  maskApiKey,
+  maskPhone,
+  maskEmail,
 }

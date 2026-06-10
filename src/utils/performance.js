@@ -1,136 +1,201 @@
-const performanceMetrics = {
-  renderTime: 0,
-  scrollTime: 0,
-  memoryUsage: 0,
-  domNodes: 0,
-  fps: 60,
+const metrics = {
+  appStart: { startTime: 0, readyTime: 0, duration: 0 },
+  pageLoads: [],
+  botRequests: [],
+  renderTimes: [],
+  memory: { samples: [], peak: 0 },
+  errors: { count: 0, list: [] },
+  custom: {},
 }
 
-const frameTimes = []
-let lastFrameTime = performance.now()
+const MAX_SAMPLES = 500
+let metricsEnabled = process.env.NODE_ENV === 'development'
 
-export function measureRenderTime(label, callback) {
-  const start = performance.now()
-  const result = callback()
-  const end = performance.now()
-  const duration = end - start
-  
-  console.debug(`[Performance] ${label}: ${duration.toFixed(2)}ms`)
-  
-  if (label === 'render') {
-    performanceMetrics.renderTime = duration
-  }
-  
-  return result
+export function enableMetrics(enabled = true) {
+  metricsEnabled = enabled
 }
 
-export function measureScrollTime(callback) {
-  const start = performance.now()
-  const result = callback()
-  const end = performance.now()
-  performanceMetrics.scrollTime = end - start
-  return result
+export function isMetricsEnabled() {
+  return metricsEnabled
 }
 
-export function calculateFPS() {
-  const currentTime = performance.now()
-  const delta = currentTime - lastFrameTime
-  lastFrameTime = currentTime
-  
-  frameTimes.push(delta)
-  if (frameTimes.length > 60) {
-    frameTimes.shift()
-  }
-  
-  const avgDelta = frameTimes.reduce((a, b) => a + b, 0) / frameTimes.length
-  performanceMetrics.fps = Math.round(1000 / avgDelta)
-  
-  return performanceMetrics.fps
+export function markAppStart() {
+  if (!metricsEnabled) return
+  metrics.appStart.startTime = performance.now()
 }
 
-export function updateMemoryUsage() {
-  if (window.performance && window.performance.memory) {
-    const memory = window.performance.memory
-    performanceMetrics.memoryUsage = (memory.usedJSHeapSize / 1024 / 1024).toFixed(2)
+export function markAppReady() {
+  if (!metricsEnabled) return
+  metrics.appStart.readyTime = performance.now()
+  metrics.appStart.duration = metrics.appStart.readyTime - metrics.appStart.startTime
+}
+
+export function trackPageLoad(pageName) {
+  if (!metricsEnabled) return
+  const loadStart = performance.now()
+  return {
+    end() {
+      if (!metricsEnabled) return
+      metrics.pageLoads.push({
+        page: pageName,
+        duration: performance.now() - loadStart,
+        timestamp: Date.now(),
+      })
+      if (metrics.pageLoads.length > MAX_SAMPLES) {
+        metrics.pageLoads.shift()
+      }
+    }
   }
 }
 
-export function updateDomNodeCount() {
-  performanceMetrics.domNodes = document.querySelectorAll('*').length
+export function trackBotRequest(botName, requestType = 'query') {
+  const startTime = performance.now()
+  return {
+    end(success = true, error = null) {
+      if (!metricsEnabled) return
+      metrics.botRequests.push({
+        bot: botName,
+        type: requestType,
+        duration: performance.now() - startTime,
+        success,
+        error: error?.message || null,
+        timestamp: Date.now(),
+      })
+      if (metrics.botRequests.length > MAX_SAMPLES) {
+        metrics.botRequests.shift()
+      }
+    }
+  }
 }
 
-export function getPerformanceMetrics() {
-  return { ...performanceMetrics }
+export function trackRenderTime(componentName) {
+  const startTime = performance.now()
+  return {
+    end() {
+      if (!metricsEnabled) return
+      metrics.renderTimes.push({
+        component: componentName,
+        duration: performance.now() - startTime,
+        timestamp: Date.now(),
+      })
+      if (metrics.renderTimes.length > MAX_SAMPLES) {
+        metrics.renderTimes.shift()
+      }
+    }
+  }
 }
 
-export function logPerformanceReport() {
-  console.table({
-    'Render Time (ms)': performanceMetrics.renderTime.toFixed(2),
-    'Scroll Time (ms)': performanceMetrics.scrollTime.toFixed(2),
-    'Memory Usage (MB)': performanceMetrics.memoryUsage,
-    'DOM Nodes': performanceMetrics.domNodes,
-    'FPS': performanceMetrics.fps,
+export function getMetrics() {
+  return {
+    appStart: { ...metrics.appStart },
+    pageLoads: [...metrics.pageLoads],
+    botRequests: [...metrics.botRequests],
+    renderTimes: [...metrics.renderTimes],
+    memory: {
+      samples: [...metrics.memory.samples],
+      peak: metrics.memory.peak,
+    },
+    errors: { ...metrics.errors, list: [...metrics.errors.list] },
+    custom: { ...metrics.custom },
+  }
+}
+
+export function getMetricsSummary() {
+  const avgBotRequests = calcAverage(metrics.botRequests)
+  const avgRenderTimes = calcAverage(metrics.renderTimes)
+  const avgPageLoads = calcAverage(metrics.pageLoads)
+  const successRate = metrics.botRequests.length > 0
+    ? (metrics.botRequests.filter(r => r.success).length / metrics.botRequests.length)
+    : 0
+
+  return {
+    app: {
+      startDuration: metrics.appStart.duration,
+      pageLoads: metrics.pageLoads.length,
+      errors: metrics.errors.count,
+    },
+    performance: {
+      avgBotRequest: avgBotRequests,
+      avgRender: avgRenderTimes,
+      avgPageLoad: avgPageLoads,
+    },
+    reliability: {
+      botSuccessRate: successRate,
+      requestCount: metrics.botRequests.length,
+    },
+    memory: {
+      peak: metrics.memory.peak,
+      samples: metrics.memory.samples.length,
+    },
+    custom: { ...metrics.custom },
+  }
+}
+
+function calcAverage(arr) {
+  if (!arr || arr.length === 0) return 0
+  return arr.reduce((sum, item) => sum + (item.duration || 0), 0) / arr.length
+}
+
+export function logMetrics() {
+  if (!metricsEnabled) return
+  const summary = getMetricsSummary()
+  console.table && console.table({
+    'App Start': `${Math.round(summary.app.startDuration)}ms`,
+    'Bot Req Avg': `${Math.round(summary.performance.avgBotRequest)}ms`,
+    'Render Avg': `${Math.round(summary.performance.avgRender)}ms`,
+    'Success Rate': `${(summary.reliability.botSuccessRate * 100).toFixed(1)}%`,
+    'Total Bot Reqs': summary.reliability.requestCount,
+    'Memory Peak': summary.memory.peak ? `${summary.memory.peak.toFixed(2)}MB` : 'N/A',
+    'Errors': summary.app.errors,
   })
 }
 
-export function shouldOptimize() {
-  return performanceMetrics.fps < 30 || performanceMetrics.domNodes > 5000
+export function clearMetrics() {
+  metrics.pageLoads = []
+  metrics.botRequests = []
+  metrics.renderTimes = []
+  metrics.errors = { count: 0, list: [] }
+  metrics.custom = {}
 }
 
-export function debounceAnimationFrame(fn) {
-  let requestId = null
-  return function(...args) {
-    if (requestId) {
-      cancelAnimationFrame(requestId)
-    }
-    requestId = requestAnimationFrame(() => {
-      fn.apply(this, args)
-      requestId = null
-    })
-  }
-}
-
-export function throttleAnimationFrame(fn, limit = 16) {
-  let inThrottle = false
-  return function(...args) {
-    if (!inThrottle) {
-      fn.apply(this, args)
-      inThrottle = true
-      requestAnimationFrame(() => {
-        inThrottle = false
-      })
-    }
+function recordError(error) {
+  metrics.errors.count++
+  metrics.errors.list.push({
+    message: error?.message || String(error),
+    stack: error?.stack,
+    timestamp: Date.now(),
+  })
+  if (metrics.errors.list.length > 100) {
+    metrics.errors.list.shift()
   }
 }
 
-export class PerformanceObserverWrapper {
-  constructor() {
-    this.observer = null
-    this.entries = []
+window.addEventListener('error', (e) => recordError(e.error))
+window.addEventListener('unhandledrejection', (e) => recordError(e.reason))
+
+export function sampleMemory() {
+  if (!metricsEnabled || !performance.memory) return null
+  const used = performance.memory.usedJSHeapSize / (1024 * 1024)
+  metrics.memory.samples.push(used)
+  metrics.memory.peak = Math.max(metrics.memory.peak, used)
+  if (metrics.memory.samples.length > 100) {
+    metrics.memory.samples.shift()
   }
-  
-  start() {
-    if ('PerformanceObserver' in window) {
-      this.observer = new PerformanceObserver((list) => {
-        this.entries = this.entries.concat(list.getEntries())
-      })
-      this.observer.observe({ entryTypes: ['measure', 'render'] })
-    }
-  }
-  
-  stop() {
-    if (this.observer) {
-      this.observer.disconnect()
-    }
-  }
-  
-  getEntriesByType(type) {
-    return this.entries.filter(e => e.entryType === type)
-  }
+  return used
 }
 
 setInterval(() => {
-  calculateFPS()
-  updateMemoryUsage()
-  updateDomNodeCount()
-}, 1000)
+  if (metricsEnabled && performance.memory) {
+    sampleMemory()
+  }
+}, 30000)
+
+export function setCustomMetric(key, value) {
+  if (!metricsEnabled) return
+  metrics.custom[key] = value
+}
+
+export function incrementCustomMetric(key, delta = 1) {
+  if (!metricsEnabled) return
+  metrics.custom[key] = (metrics.custom[key] || 0) + delta
+}

@@ -13,6 +13,9 @@ export { shell } from './shellAdapter'
 export { dialog } from './dialogAdapter'
 export { app, storage } from './appAdapter'
 
+export * from './errorHandler'
+export * from './validator'
+
 const platformAdapter = {
   PlatformType,
   platform,
