@@ -121,8 +121,17 @@ import Qihoo360AIBrainBotSettings from "./BotSettings/Qihoo360AIBrainBotSettings
 import CharacterAIBotSettings from "./BotSettings/CharacterAIBotSettings.vue";
 import ClaudeAIBotSettings from "./BotSettings/ClaudeAIBotSettings.vue";
 import ChatGLMBotSettings from "./BotSettings/ChatGLMBotSettings.vue";
+import ChatGLMAPIBotSettings from "./BotSettings/ChatGLMAPIBotSettings.vue";
 import CohereAPIBotSettings from "./BotSettings/CohereAPIBotSettings.vue";
-import KimiBotSettings from "./BotSettings/KimiBotSettings.vue";
+import KimiBotSettings from "@/components/BotSettings/KimiBotSettings.vue";
+import DoubaoBotSettings from "./BotSettings/DoubaoBotSettings.vue";
+import DoubaoWebBotSettings from "./BotSettings/DoubaoWebBotSettings.vue";
+import DeepSeekBotSettings from "./BotSettings/DeepSeekBotSettings.vue";
+import DeepSeekWebBotSettings from "./BotSettings/DeepSeekWebBotSettings.vue";
+import QwenAPIBotSettings from "./BotSettings/QwenAPIBotSettings.vue";
+import SparkAPIBotSettings from "./BotSettings/SparkAPIBotSettings.vue";
+import MiniMaxAPIBotSettings from "./BotSettings/MiniMaxAPIBotSettings.vue";
+import MiniMaxWebBotSettings from "./BotSettings/MiniMaxWebBotSettings.vue";
 
 import { resolveTheme, applyTheme, Mode } from "../theme";
 import ClaudeAPIBotSettings from "./BotSettings/ClaudeAPIBotSettings.vue";
@@ -146,10 +155,15 @@ const botSettings = [
   { brand: "bingChat", component: BingChatBotSettings },
   { brand: "characterAI", component: CharacterAIBotSettings },
   { brand: "chatGlm", component: ChatGLMBotSettings },
+  { brand: "chatglmApi", component: ChatGLMAPIBotSettings },
   { brand: "chatGpt", component: ChatGPTBotSettings },
   { brand: "claudeAi", component: ClaudeAIBotSettings },
   { brand: "claudeApi", component: ClaudeAPIBotSettings },
   { brand: "cohereApi", component: CohereAPIBotSettings },
+  { brand: "doubao", component: DoubaoBotSettings },
+  { brand: "doubaoWeb", component: DoubaoWebBotSettings },
+  { brand: "deepseek", component: DeepSeekBotSettings },
+  { brand: "deepseekWeb", component: DeepSeekWebBotSettings },
   { brand: "geminiApi", component: GeminiAPIBotSettings },
   { brand: "gradio", component: GradioAppBotSettings },
   { brand: "groqApi", component: GroqAPIBotSettings },
@@ -164,11 +178,15 @@ const botSettings = [
   { brand: "pi", component: PiBotSettings },
   { brand: "poe", component: PoeBotSettings },
   { brand: "qianWen", component: QianWenBotSettings },
+  { brand: "qwenApi", component: QwenAPIBotSettings },
   { brand: "skyWork", component: SkyWorkBotSettings },
   { brand: "spark", component: SparkBotSettings },
+  { brand: "sparkApi", component: SparkAPIBotSettings },
   { brand: "wenxinQianfan", component: WenxinQianfanBotSettings },
   { brand: "xaiApi", component: xAIAPIBotSettings },
   { brand: "youChat", component: YouChatBotSettings },
+  { brand: "miniMaxApi", component: MiniMaxAPIBotSettings },
+  { brand: "miniMaxWeb", component: MiniMaxWebBotSettings },
 ];
 
 const proxy = ProxySettings;

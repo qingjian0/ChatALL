@@ -35,6 +35,7 @@ module.exports = defineConfig({
           allowToChangeInstallationDirectory: true,
         },
       },
+      mainProcessPreload: "./src/preload.js",
       /**
        * work around to fix this issue: https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/1647#issuecomment-1019400838
        * some resources is defined by url in css file can't be loaded on production build (urls start with app:///)
