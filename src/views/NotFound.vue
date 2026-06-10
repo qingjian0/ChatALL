@@ -1,18 +1,23 @@
 <template>
+
   <div class="not-found">
+
     <div class="error-code">404</div>
-    <h1>{{ t('notFound.title') }}</h1>
-    <p>{{ t('notFound.description') }}</p>
-    <router-link to="/" class="home-link">
-      {{ t('notFound.goHome') }}
-    </router-link>
+
+    <h1>{{ t("notFound.title") }}</h1>
+
+    <p>{{ t("notFound.description") }}</p>
+     <router-link to="/" class="home-link"
+      > {{ t("notFound.goHome") }} </router-link
+    >
   </div>
+
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
+import { useI18n } from "vue-i18n";
 
-const { t } = useI18n()
+const { t } = useI18n();
 </script>
 
 <style scoped>
@@ -55,3 +60,4 @@ const { t } = useI18n()
   opacity: 0.9;
 }
 </style>
+

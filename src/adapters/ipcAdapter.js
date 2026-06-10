@@ -1,65 +1,67 @@
-import { isElectron } from './platformDetector'
+import { isElectron } from "./platformDetector";
 
 class WebEventBus {
   constructor() {
-    this.handlers = {}
+    this.handlers = {};
   }
 
   on(channel, listener) {
     if (!this.handlers[channel]) {
-      this.handlers[channel] = []
+      this.handlers[channel] = [];
     }
-    this.handlers[channel].push(listener)
-    return this
+    this.handlers[channel].push(listener);
+    return this;
   }
 
   off(channel, listener) {
-    if (!this.handlers[channel]) return this
-    this.handlers[channel] = this.handlers[channel].filter((h) => h !== listener)
-    return this
+    if (!this.handlers[channel]) return this;
+    this.handlers[channel] = this.handlers[channel].filter(
+      (h) => h !== listener,
+    );
+    return this;
   }
 
   send(channel, ...args) {
-    const event = new CustomEvent(`ipc:${channel}`, { detail: args })
-    window.dispatchEvent(event)
-    return this
+    const event = new CustomEvent(`ipc:${channel}`, { detail: args });
+    window.dispatchEvent(event);
+    return this;
   }
 
   invoke(channel, ...args) {
     return new Promise((resolve) => {
-      const responseChannel = `ipc:response:${channel}:${Date.now()}`
+      const responseChannel = `ipc:response:${channel}:${Date.now()}`;
       const timeout = setTimeout(() => {
-        this.off(responseChannel)
-        resolve(null)
-      }, 5000)
+        this.off(responseChannel);
+        resolve(null);
+      }, 5000);
 
       const handler = (event) => {
-        clearTimeout(timeout)
-        this.off(responseChannel, handler)
-        resolve(event.detail)
-      }
+        clearTimeout(timeout);
+        this.off(responseChannel, handler);
+        resolve(event.detail);
+      };
 
-      this.on(responseChannel, handler)
-      this.send(channel, ...args, responseChannel)
-    })
+      this.on(responseChannel, handler);
+      this.send(channel, ...args, responseChannel);
+    });
   }
 
   removeAllListeners(channel) {
     if (channel) {
-      delete this.handlers[channel]
+      delete this.handlers[channel];
     } else {
-      this.handlers = {}
+      this.handlers = {};
     }
-    return this
+    return this;
   }
 }
 
-const webEventBus = new WebEventBus()
+const webEventBus = new WebEventBus();
 
-let electronIpcRenderer = null
+let electronIpcRenderer = null;
 try {
-  if (isElectron() && typeof window.require === 'function') {
-    electronIpcRenderer = window.require('electron').ipcRenderer
+  if (isElectron() && typeof window.require === "function") {
+    electronIpcRenderer = window.require("electron").ipcRenderer;
   }
 } catch (e) {
   // Web environment, no Electron available
@@ -68,63 +70,63 @@ try {
 const ipcRenderer = {
   on: (channel, listener) => {
     if (electronIpcRenderer) {
-      electronIpcRenderer.on(channel, listener)
+      electronIpcRenderer.on(channel, listener);
     } else {
-      webEventBus.on(channel, listener)
+      webEventBus.on(channel, listener);
       window.addEventListener(`ipc:${channel}`, (event) => {
-        listener(null, ...event.detail)
-      })
+        listener(null, ...event.detail);
+      });
     }
-    return ipcRenderer
+    return ipcRenderer;
   },
 
   off: (channel, listener) => {
     if (electronIpcRenderer) {
-      electronIpcRenderer.off(channel, listener)
+      electronIpcRenderer.off(channel, listener);
     } else {
-      webEventBus.off(channel, listener)
+      webEventBus.off(channel, listener);
     }
-    return ipcRenderer
+    return ipcRenderer;
   },
 
   send: (channel, ...args) => {
     if (electronIpcRenderer) {
-      electronIpcRenderer.send(channel, ...args)
+      electronIpcRenderer.send(channel, ...args);
     } else {
-      webEventBus.send(channel, ...args)
+      webEventBus.send(channel, ...args);
     }
-    return ipcRenderer
+    return ipcRenderer;
   },
 
   invoke: async (channel, ...args) => {
     if (electronIpcRenderer) {
-      return electronIpcRenderer.invoke(channel, ...args)
+      return electronIpcRenderer.invoke(channel, ...args);
     } else {
-      return webEventBus.invoke(channel, ...args)
+      return webEventBus.invoke(channel, ...args);
     }
   },
 
   removeAllListeners: (channel) => {
     if (electronIpcRenderer) {
-      electronIpcRenderer.removeAllListeners(channel)
+      electronIpcRenderer.removeAllListeners(channel);
     } else {
-      webEventBus.removeAllListeners(channel)
+      webEventBus.removeAllListeners(channel);
     }
-    return ipcRenderer
+    return ipcRenderer;
   },
 
   once: (channel, listener) => {
     if (electronIpcRenderer) {
-      electronIpcRenderer.once(channel, listener)
+      electronIpcRenderer.once(channel, listener);
     } else {
       const onceHandler = (...args) => {
-        webEventBus.off(channel, onceHandler)
-        listener(...args)
-      }
-      webEventBus.on(channel, onceHandler)
+        webEventBus.off(channel, onceHandler);
+        listener(...args);
+      };
+      webEventBus.on(channel, onceHandler);
     }
-    return ipcRenderer
+    return ipcRenderer;
   },
-}
+};
 
-export { ipcRenderer, webEventBus }
+export { ipcRenderer, webEventBus };

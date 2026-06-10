@@ -1,27 +1,39 @@
 <template>
+
   <div class="settings-view">
+
     <aside class="settings-sidebar">
+
       <nav>
-        <router-link to="/settings/bots" class="nav-item" :class="{ active: $route.name === 'SettingsBots' }">
-          <span class="icon">🤖</span>
-          <span>{{ t('settings.bots') }}</span>
-        </router-link>
-        <router-link to="/settings/appearance" class="nav-item" :class="{ active: $route.name === 'SettingsAppearance' }">
-          <span class="icon">🎨</span>
-          <span>{{ t('settings.appearance') }}</span>
-        </router-link>
+         <router-link
+          to="/settings/bots"
+          class="nav-item"
+          :class="{ active: $route.name === 'SettingsBots' }"
+          > <span class="icon">🤖</span> <span>{{ t("settings.bots") }}</span
+          > </router-link
+        > <router-link
+          to="/settings/appearance"
+          class="nav-item"
+          :class="{ active: $route.name === 'SettingsAppearance' }"
+          > <span class="icon">🎨</span> <span>{{
+            t("settings.appearance")
+          }}</span
+          > </router-link
+        >
       </nav>
+
     </aside>
-    <main class="settings-content">
-      <router-view />
-    </main>
+
+    <main class="settings-content"> <router-view /> </main>
+
   </div>
+
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
+import { useI18n } from "vue-i18n";
 
-const { t } = useI18n()
+const { t } = useI18n();
 </script>
 
 <style scoped>
@@ -66,3 +78,4 @@ const { t } = useI18n()
   overflow-y: auto;
 }
 </style>
+

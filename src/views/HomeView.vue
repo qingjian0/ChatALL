@@ -1,15 +1,16 @@
 <template>
+
   <div class="home-view">
-    <ChatDrawer />
-    <main class="chat-content">
-      <ChatThread />
-    </main>
+     <ChatDrawer />
+    <main class="chat-content"> <ChatThread /> </main>
+
   </div>
+
 </template>
 
 <script setup>
-import ChatDrawer from '@/components/ChatDrawer/ChatDrawer.vue'
-import ChatThread from '@/components/Messages/ChatThread.vue'
+import ChatDrawer from "@/components/ChatDrawer/ChatDrawer.vue";
+import ChatThread from "@/components/Messages/ChatThread.vue";
 </script>
 
 <style scoped>
@@ -25,3 +26,4 @@ import ChatThread from '@/components/Messages/ChatThread.vue'
   overflow: hidden;
 }
 </style>
+

@@ -1,111 +1,137 @@
 <template>
+
   <div class="appearance-settings">
-    <h2>{{ t('settings.appearance') }}</h2>
-    
+
+    <h2>{{ t("settings.appearance") }}</h2>
+
     <div class="setting-section">
-      <h3>{{ t('settings.theme') }}</h3>
+
+      <h3>{{ t("settings.theme") }}</h3>
+
       <div class="theme-options">
-        <button
+         <button
           v-for="theme in themes"
           :key="theme.value"
           class="theme-option"
           :class="{ active: settingsStore.settings.theme === theme.value }"
           @click="settingsStore.setTheme(theme.value)"
         >
+
           <div class="theme-preview" :class="theme.value"></div>
-          <span>{{ t(theme.label) }}</span>
-        </button>
+           <span>{{ t(theme.label) }}</span
+          > </button
+        >
       </div>
+
     </div>
-    
+
     <div class="setting-section">
-      <h3>{{ t('settings.language') }}</h3>
-      <select
+
+      <h3>{{ t("settings.language") }}</h3>
+       <select
         v-model="selectedLang"
         @change="settingsStore.setLanguage(selectedLang)"
         class="language-select"
       >
+
         <option v-for="lang in languages" :key="lang.value" :value="lang.value">
-          {{ lang.label }}
+           {{ lang.label }}
         </option>
-      </select>
+         </select
+      >
     </div>
-    
+
     <div class="setting-section">
-      <h3>{{ t('settings.columns') }}</h3>
+
+      <h3>{{ t("settings.columns") }}</h3>
+
       <div class="column-options">
-        <button
+         <button
           v-for="n in [1, 2, 3]"
           :key="n"
           class="column-option"
           :class="{ active: settingsStore.settings.columns === n }"
           @click="settingsStore.setColumns(n)"
         >
-          {{ n }} {{ t('settings.columnsLabel') }}
-        </button>
+           {{ n }} {{ t("settings.columnsLabel") }} </button
+        >
       </div>
+
     </div>
-    
+
     <div class="setting-section">
-      <h3>{{ t('settings.menuBar') }}</h3>
-      <label class="toggle-switch">
-        <input
+
+      <h3>{{ t("settings.menuBar") }}</h3>
+       <label class="toggle-switch"
+        > <input
           type="checkbox"
           :checked="settingsStore.settings.general.isShowMenuBar"
-          @change="settingsStore.setGeneral({ isShowMenuBar: !settingsStore.settings.general.isShowMenuBar })"
-        />
-        <span class="slider"></span>
-      </label>
+          @change="
+            settingsStore.setGeneral({
+              isShowMenuBar: !settingsStore.settings.general.isShowMenuBar,
+            })
+          "
+        /> <span class="slider"></span> </label
+      >
     </div>
-    
+
     <div class="setting-section">
-      <h3>{{ t('settings.appBar') }}</h3>
-      <label class="toggle-switch">
-        <input
+
+      <h3>{{ t("settings.appBar") }}</h3>
+       <label class="toggle-switch"
+        > <input
           type="checkbox"
           :checked="settingsStore.settings.general.isShowAppBar"
-          @change="settingsStore.setGeneral({ isShowAppBar: !settingsStore.settings.general.isShowAppBar })"
-        />
-        <span class="slider"></span>
-      </label>
+          @change="
+            settingsStore.setGeneral({
+              isShowAppBar: !settingsStore.settings.general.isShowAppBar,
+            })
+          "
+        /> <span class="slider"></span> </label
+      >
     </div>
+
   </div>
+
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useSettingsStore } from '@/stores/settingsStore'
+import { ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import { useSettingsStore } from "@/stores/settingsStore";
 
-const { t } = useI18n()
-const settingsStore = useSettingsStore()
+const { t } = useI18n();
+const settingsStore = useSettingsStore();
 
 const themes = [
-  { value: 'light', label: 'settings.themeLight' },
-  { value: 'dark', label: 'settings.themeDark' },
-  { value: 'system', label: 'settings.themeSystem' },
-]
+  { value: "light", label: "settings.themeLight" },
+  { value: "dark", label: "settings.themeDark" },
+  { value: "system", label: "settings.themeSystem" },
+];
 
 const languages = [
-  { value: 'auto', label: 'Auto' },
-  { value: 'en', label: 'English' },
-  { value: 'zh', label: '中文' },
-  { value: 'zh-cn', label: '简体中文' },
-  { value: 'zh-tw', label: '繁体中文' },
-  { value: 'ja', label: '日本語' },
-  { value: 'ko', label: '한국어' },
-  { value: 'de', label: 'Deutsch' },
-  { value: 'fr', label: 'Français' },
-  { value: 'es', label: 'Español' },
-  { value: 'ru', label: 'Русский' },
-  { value: 'vi', label: 'Tiếng Việt' },
-]
+  { value: "auto", label: "Auto" },
+  { value: "en", label: "English" },
+  { value: "zh", label: "中文" },
+  { value: "zh-cn", label: "简体中文" },
+  { value: "zh-tw", label: "繁体中文" },
+  { value: "ja", label: "日本語" },
+  { value: "ko", label: "한국어" },
+  { value: "de", label: "Deutsch" },
+  { value: "fr", label: "Français" },
+  { value: "es", label: "Español" },
+  { value: "ru", label: "Русский" },
+  { value: "vi", label: "Tiếng Việt" },
+];
 
-const selectedLang = ref(settingsStore.settings.lang)
+const selectedLang = ref(settingsStore.settings.lang);
 
-watch(() => settingsStore.settings.lang, (newLang) => {
-  selectedLang.value = newLang
-})
+watch(
+  () => settingsStore.settings.lang,
+  (newLang) => {
+    selectedLang.value = newLang;
+  },
+);
 </script>
 
 <style scoped>
@@ -253,3 +279,4 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 </style>
+

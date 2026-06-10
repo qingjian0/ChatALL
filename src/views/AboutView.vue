@@ -1,54 +1,79 @@
 <template>
+
   <div class="about-view">
+
     <div class="about-content">
+
       <div class="logo-section">
-        <img src="/logo-banner.png" alt="ChatALL Logo" class="logo" />
+         <img src="/logo-banner.png" alt="ChatALL Logo" class="logo" />
         <h1>ChatALL</h1>
-        <p class="tagline">{{ t('about.tagline') }}</p>
+
+        <p class="tagline">{{ t("about.tagline") }}</p>
+
       </div>
-      
+
       <div class="info-section">
-        <h2>{{ t('about.about') }}</h2>
-        <p>{{ t('about.description') }}</p>
+
+        <h2>{{ t("about.about") }}</h2>
+
+        <p>{{ t("about.description") }}</p>
+
       </div>
-      
+
       <div class="features-section">
-        <h2>{{ t('about.features') }}</h2>
+
+        <h2>{{ t("about.features") }}</h2>
+
         <ul class="features-list">
-          <li>{{ t('about.feature1') }}</li>
-          <li>{{ t('about.feature2') }}</li>
-          <li>{{ t('about.feature3') }}</li>
-          <li>{{ t('about.feature4') }}</li>
+
+          <li>{{ t("about.feature1") }}</li>
+
+          <li>{{ t("about.feature2") }}</li>
+
+          <li>{{ t("about.feature3") }}</li>
+
+          <li>{{ t("about.feature4") }}</li>
+
         </ul>
+
       </div>
-      
+
       <div class="version-section">
-        <p>{{ t('about.version') }}: {{ version }}</p>
+
+        <p>{{ t("about.version") }}: {{ version }}</p>
+
       </div>
-      
+
       <div class="links-section">
-        <a href="https://github.com/qingjian0/ChatALL" target="_blank" class="link">
-          <span>GitHub</span>
-        </a>
-        <a href="https://chatall.io" target="_blank" class="link">
-          <span>Website</span>
-        </a>
+         <a
+          href="https://github.com/qingjian0/ChatALL"
+          target="_blank"
+          class="link"
+          > <span>GitHub</span> </a
+        > <a href="https://chatall.io" target="_blank" class="link"
+          > <span>Website</span> </a
+        >
       </div>
-      
+
       <div class="license-section">
-        <p>{{ t('about.license') }}</p>
+
+        <p>{{ t("about.license") }}</p>
+
       </div>
+
     </div>
+
   </div>
+
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 
-const { t } = useI18n()
+const { t } = useI18n();
 
-const version = ref('1.86.8')
+const version = ref("1.86.8");
 </script>
 
 <style scoped>
@@ -147,3 +172,4 @@ const version = ref('1.86.8')
   color: var(--text-secondary);
 }
 </style>
+

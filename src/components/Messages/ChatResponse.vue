@@ -409,20 +409,25 @@ async function hide() {
   }
 }
 
-function handleClick(event) {
+async function handleClick(event) {
   const target = event.target;
-  if (target.tagName !== "A" && target.parentElement.tagName !== "A") {
+  if (!target) return;
+  const linkEl =
+    target.tagName === "A"
+      ? target
+      : target.parentElement && target.parentElement.tagName === "A"
+        ? target.parentElement
+        : null;
+  if (!linkEl) return;
+  if (linkEl.target === "innerWindow") {
     return;
   }
-  if (target.target === "innerWindow") {
-    // Open in Electron inner window
-    return;
-  }
-  // Open in external browser
   event.preventDefault();
   const { shell } = await import("@/adapters");
-  const url = target.href || target.parentElement.href;
-  shell.openExternal(url);
+  const url = linkEl.href;
+  if (url && shell) {
+    shell.openExternal(url);
+  }
 }
 
 async function resendPrompt(responseMessage) {

@@ -17,28 +17,28 @@ const SECURE_STORAGE_KEY = "chatall-secure-vault";
 
 export async function secureStorageSet(key, value, password = null) {
   const actualPassword = password || passwordManager.getPassword();
-  
+
   if (!value) {
     await secureStorageRemove(key);
     return null;
   }
-  
+
   const encryptedValue = await encrypt(value, actualPassword);
-  
+
   const vault = await getVault();
   vault[key] = encryptedValue;
   await saveVault(vault);
-  
+
   return encryptedValue;
 }
 
 export async function secureStorageGet(key, password = null) {
   const vault = await getVault();
-  
+
   if (!vault[key]) {
     return null;
   }
-  
+
   const actualPassword = password || passwordManager.getPassword();
   return decrypt(vault[key], actualPassword);
 }
@@ -106,10 +106,10 @@ export async function migrateToSecureStorage(store) {
     { path: "poe.formkey", key: "poe.formkey" },
     { path: "xaiApi.apiKey", key: "xaiApi.apiKey" },
   ];
-  
+
   const password = passwordManager.getPassword();
   const migrationResults = [];
-  
+
   for (const { path, key } of sensitiveFields) {
     try {
       const value = getNestedValue(store.state, path);
@@ -123,7 +123,7 @@ export async function migrateToSecureStorage(store) {
       logError(`Failed to migrate ${key}:`, error);
     }
   }
-  
+
   return migrationResults;
 }
 

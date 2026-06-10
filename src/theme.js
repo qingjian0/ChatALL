@@ -36,7 +36,9 @@ export const resolveTheme = async (mode, ipcRenderer) => {
     if (isElectron() && ipcRenderer) {
       try {
         const nativeTheme = await ipcRenderer.invoke("get-native-theme");
-        resolvedTheme = nativeTheme.shouldUseDarkColors ? Theme.DARK : Theme.LIGHT;
+        resolvedTheme = nativeTheme.shouldUseDarkColors
+          ? Theme.DARK
+          : Theme.LIGHT;
       } catch (error) {
         console.warn("Failed to get native theme, using web fallback:", error);
         resolvedTheme = getSystemThemeWeb();

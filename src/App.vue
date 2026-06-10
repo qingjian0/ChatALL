@@ -1,42 +1,42 @@
 <template>
-  <v-app>
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
-  </v-app>
+   <v-app
+    > <router-view v-slot="{ Component }"
+      > <transition name="fade" mode="out-in"
+        > <component :is="Component" /> </transition
+      > </router-view
+    > </v-app
+  >
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
-import { useSettingsStore } from '@/stores/settingsStore'
-import { useChatStore } from '@/stores/chatStore'
-import { useBotStore } from '@/stores/botStore'
+import { onMounted, onUnmounted } from "vue";
+import { useSettingsStore } from "@/stores/settingsStore";
+import { useChatStore } from "@/stores/chatStore";
+import { useBotStore } from "@/stores/botStore";
 
-const settingsStore = useSettingsStore()
-const chatStore = useChatStore()
-const botStore = useBotStore()
+const settingsStore = useSettingsStore();
+const chatStore = useChatStore();
+const botStore = useBotStore();
 
 async function initApp() {
-  settingsStore.loadSettings()
-  await chatStore.loadChats()
-  await botStore.loadBotConfigs()
-  await botStore.initBots()
+  settingsStore.loadSettings();
+  await chatStore.loadChats();
+  await botStore.loadBotConfigs();
+  await botStore.initBots();
 }
 
 function handleBeforeUnload() {
-  settingsStore.saveSettings()
+  settingsStore.saveSettings();
 }
 
 onMounted(() => {
-  initApp()
-  window.addEventListener('beforeunload', handleBeforeUnload)
-})
+  initApp();
+  window.addEventListener("beforeunload", handleBeforeUnload);
+});
 
 onUnmounted(() => {
-  window.removeEventListener('beforeunload', handleBeforeUnload)
-})
+  window.removeEventListener("beforeunload", handleBeforeUnload);
+});
 </script>
 
 <style>
@@ -108,3 +108,4 @@ body {
   }
 }
 </style>
+

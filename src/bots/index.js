@@ -176,11 +176,11 @@ export async function loadBot(className) {
     const module = await moduleLoader();
     const BotClass = module.default || module[className];
     const instance = BotClass.getInstance();
-    
+
     if (disabled.includes(className)) {
       instance.disable();
     }
-    
+
     loadedBots.set(className, instance);
     return instance;
   } catch (error) {
@@ -191,17 +191,19 @@ export async function loadBot(className) {
 
 export async function loadAllBots() {
   const promises = botClassNames.map((className) => loadBot(className));
-  
+
   if (process.env.NODE_ENV !== "production") {
     const DevBot = (await import("./DevBot")).default;
-    promises.push(DevBot.getInstance().then((instance) => {
-      loadedBots.set("DevBot", instance);
-      return instance;
-    }));
+    promises.push(
+      DevBot.getInstance().then((instance) => {
+        loadedBots.set("DevBot", instance);
+        return instance;
+      }),
+    );
   }
-  
+
   const allBots = await Promise.all(promises);
-  
+
   return {
     all: allBots,
     getBotByClassName(className) {
@@ -218,7 +220,7 @@ export async function loadEssentialBots() {
     "KimiBot",
     "OpenAIAPI35Bot",
   ];
-  
+
   const promises = essentialClassNames.map((className) => loadBot(className));
   return await Promise.all(promises);
 }
@@ -336,7 +338,7 @@ export async function getBotTagsWithInstances() {
   const result = {};
   for (const [tag, classNames] of Object.entries(botTags)) {
     result[tag] = await Promise.all(
-      classNames.map((className) => loadBot(className))
+      classNames.map((className) => loadBot(className)),
     );
   }
   return result;

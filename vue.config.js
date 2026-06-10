@@ -1,5 +1,10 @@
 const { defineConfig } = require("@vue/cli-service");
-const CompressionPlugin = require("compression-webpack-plugin");
+let CompressionPlugin = null;
+try {
+  CompressionPlugin = require("compression-webpack-plugin");
+} catch (e) {
+  console.warn("[vue.config] compression-webpack-plugin not available, compression disabled");
+}
 const zlib = require("zlib");
 
 module.exports = defineConfig({
@@ -56,10 +61,9 @@ module.exports = defineConfig({
           // 其他通用依赖
           vendorCommon: {
             name: "vendor-common",
-            test: /[\\/]node_modules[\\/]/,
+            test: /[\\/]node_modules[\\/](?!(vue|pinia|vue-i18n|vue-router|vuetify|@mdi|@kangc\/v-md-editor|prismjs|katex|langchain|@langchain))[\\/]/,
             priority: 10,
             reuseExistingChunk: true,
-            exclude: /[\\/]node_modules[\\/](vue|pinia|vue-i18n|vue-router|vuetify|@mdi|@kangc\/v-md-editor|prismjs|katex|langchain|@langchain)[\\/]/,
           },
         },
       },
@@ -67,26 +71,30 @@ module.exports = defineConfig({
         name: "runtime",
       },
     },
-    plugins: [
-      // Gzip 压缩
-      new CompressionPlugin({
-        filename: "[path][base].gz",
-        algorithm: "gzip",
-        test: /\.(js|css|html|svg)$/,
-        threshold: 8192,
-        minRatio: 0.8,
-        compressionOptions: { level: 9 },
-      }),
-      // Brotli 压缩
-      new CompressionPlugin({
-        filename: "[path][base].br",
-        algorithm: "brotliCompress",
-        test: /\.(js|css|html|svg)$/,
-        threshold: 8192,
-        minRatio: 0.8,
-        compressionOptions: { level: 11 },
-      }),
-    ],
+    plugins: (() => {
+      const plugins = []
+      if (CompressionPlugin) {
+        plugins.push(
+          new CompressionPlugin({
+            filename: "[path][base].gz",
+            algorithm: "gzip",
+            test: /\.(js|css|html|svg)$/,
+            threshold: 8192,
+            minRatio: 0.8,
+            compressionOptions: { level: 9 },
+          }),
+          new CompressionPlugin({
+            filename: "[path][base].br",
+            algorithm: "brotliCompress",
+            test: /\.(js|css|html|svg)$/,
+            threshold: 8192,
+            minRatio: 0.8,
+            compressionOptions: { level: 11 },
+          }),
+        )
+      }
+      return plugins
+    })(),
     resolve: {
       extensions: [".js", ".vue", ".json"],
       alias: {

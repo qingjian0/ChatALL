@@ -23,7 +23,7 @@ async function deriveKey(password, salt) {
     encoder.encode(password),
     { name: KEY_DERIVATION_ALGORITHM },
     false,
-    ["deriveKey"]
+    ["deriveKey"],
   );
 
   return crypto.subtle.deriveKey(
@@ -36,20 +36,20 @@ async function deriveKey(password, salt) {
     passwordKey,
     { name: ENCRYPTION_ALGORITHM, length: KEY_LENGTH },
     true,
-    ["encrypt", "decrypt"]
+    ["encrypt", "decrypt"],
   );
 }
 
 async function encryptData(data, key, iv) {
   const encoder = new TextEncoder();
   const encodedData = encoder.encode(data);
-  
+
   const encryptedData = await crypto.subtle.encrypt(
     { name: ENCRYPTION_ALGORITHM, iv: iv },
     key,
-    encodedData
+    encodedData,
   );
-  
+
   return encryptedData;
 }
 
@@ -58,9 +58,9 @@ async function decryptData(encryptedData, key, iv) {
     const decryptedData = await crypto.subtle.decrypt(
       { name: ENCRYPTION_ALGORITHM, iv: iv },
       key,
-      encryptedData
+      encryptedData,
     );
-    
+
     const decoder = new TextDecoder();
     return decoder.decode(decryptedData);
   } catch (error) {
@@ -101,7 +101,7 @@ export async function decrypt(encryptedObject, password) {
   const salt = base64ToArrayBuffer(encryptedObject.salt);
   const iv = base64ToArrayBuffer(encryptedObject.iv);
   const encryptedData = base64ToArrayBuffer(encryptedObject.data);
-  
+
   const key = await deriveKey(password, salt);
   return decryptData(encryptedData, key, iv);
 }
@@ -115,7 +115,7 @@ export async function generateKeyPair() {
       hash: { name: "SHA-256" },
     },
     true,
-    ["encrypt", "decrypt"]
+    ["encrypt", "decrypt"],
   );
 }
 
@@ -123,12 +123,16 @@ export async function exportKey(key, format = "jwk") {
   return crypto.subtle.exportKey(format, key);
 }
 
-export async function importKey(keyData, format = "jwk", keyUsages = ["encrypt", "decrypt"]) {
+export async function importKey(
+  keyData,
+  format = "jwk",
+  keyUsages = ["encrypt", "decrypt"],
+) {
   return crypto.subtle.importKey(
     format,
     keyData,
     { name: "RSA-OAEP", hash: { name: "SHA-256" } },
     true,
-    keyUsages
+    keyUsages,
   );
 }

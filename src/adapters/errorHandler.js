@@ -16,15 +16,15 @@ export const ErrorCode = {
   IPC_ERROR: 5001,
   THEME_ERROR: 6001,
   SHELL_ERROR: 7001,
-}
+};
 
 export class AdapterError extends Error {
   constructor(message, code = ErrorCode.UNKNOWN, details = {}) {
-    super(message)
-    this.name = 'AdapterError'
-    this.code = code
-    this.details = details
-    this.timestamp = Date.now()
+    super(message);
+    this.name = "AdapterError";
+    this.code = code;
+    this.details = details;
+    this.timestamp = Date.now();
   }
 
   toJSON() {
@@ -34,99 +34,103 @@ export class AdapterError extends Error {
       code: this.code,
       details: this.details,
       timestamp: this.timestamp,
-    }
+    };
   }
 
   toString() {
-    return `[AdapterError:${this.code}] ${this.message}`
+    return `[AdapterError:${this.code}] ${this.message}`;
   }
 }
 
 export function createError(message, code, details) {
-  return new AdapterError(message, code, details)
+  return new AdapterError(message, code, details);
 }
 
-export function wrapError(error, fallbackMessage, fallbackCode = ErrorCode.UNKNOWN) {
+export function wrapError(
+  error,
+  fallbackMessage,
+  fallbackCode = ErrorCode.UNKNOWN,
+) {
   if (error instanceof AdapterError) {
-    return error
+    return error;
   }
-  
-  const message = error?.message || fallbackMessage || 'Unknown error'
+
+  const message = error?.message || fallbackMessage || "Unknown error";
   const details = {
     originalError: error?.message,
     originalStack: error?.stack,
     originalName: error?.name,
-  }
-  
-  return new AdapterError(message, fallbackCode, details)
+  };
+
+  return new AdapterError(message, fallbackCode, details);
 }
 
 export function createNotSupportedError(feature) {
   return new AdapterError(
     `${feature} is not supported in this environment`,
     ErrorCode.NOT_SUPPORTED,
-    { feature }
-  )
+    { feature },
+  );
 }
 
 export function createPlatformError(feature) {
   return new AdapterError(
     `${feature} is not available`,
     ErrorCode.PLATFORM_NOT_AVAILABLE,
-    { feature }
-  )
+    { feature },
+  );
 }
 
 export function createTimeoutError(feature) {
-  return new AdapterError(
-    `${feature} operation timed out`,
-    ErrorCode.TIMEOUT,
-    { feature }
-  )
+  return new AdapterError(`${feature} operation timed out`, ErrorCode.TIMEOUT, {
+    feature,
+  });
 }
 
 export function handleAdapterCall(adapterName, fn) {
   return (...args) => {
     try {
-      return fn(...args)
+      return fn(...args);
     } catch (error) {
-      console.warn(`[${adapterName}]`, error?.message || error)
-      throw wrapError(error, 'Adapter call failed')
-    )
-  }
+      console.warn(`[${adapterName}]`, error?.message || error);
+      throw wrapError(error, "Adapter call failed");
+    }
+  };
 }
 
 export function safeExecute(fn, defaultValue = null) {
   try {
-    const result = fn()
+    const result = fn();
     if (result instanceof Promise) {
-      return result.catch(e => {
-        console.warn('[safeExecute]', e?.message || e)
-        return defaultValue
-      })
+      return result.catch((e) => {
+        console.warn("[safeExecute]", e?.message || e);
+        return defaultValue;
+      });
     }
-    return result
+    return result;
   } catch (e) {
-    console.warn('[safeExecute]', e?.message || e)
-    return defaultValue
+    console.warn("[safeExecute]", e?.message || e);
+    return defaultValue;
   }
 }
 
 export function withRetry(fn, maxRetries = 3, delayMs = 100) {
-  return async function(...args) {
-    let lastError
+  return async function (...args) {
+    let lastError;
     for (let i = 0; i < maxRetries; i++) {
       try {
-        return await fn(...args)
+        return await fn(...args);
       } catch (error) {
-        lastError = error
+        lastError = error;
         if (i < maxRetries - 1) {
-          await new Promise(resolve => setTimeout(resolve, delayMs * (i + 1))
+          await new Promise((resolve) =>
+            setTimeout(resolve, delayMs * (i + 1)),
+          );
         }
       }
     }
-    throw lastError
-  }
+    throw lastError;
+  };
 }
 
 export const ErrorHandler = {
@@ -136,7 +140,7 @@ export const ErrorHandler = {
   wrapError,
   safeExecute,
   withRetry,
-}
+};
 
 export default {
   ErrorCode,
@@ -146,4 +150,4 @@ export default {
   safeExecute,
   withRetry,
   ErrorHandler,
-}
+};

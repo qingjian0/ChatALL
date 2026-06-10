@@ -1,46 +1,48 @@
 <template>
-  <div
-    ref="scrollWrapper"
-    class="virtual-messages-wrapper"
-    @scroll="onScroll"
-  >
+
+  <div ref="scrollWrapper" class="virtual-messages-wrapper" @scroll="onScroll">
+
     <div
       ref="contentContainer"
       class="content-container"
       :style="{ minHeight: totalContentHeight + 'px' }"
     >
+
       <div
         v-for="item in visibleItems"
         :key="item.id"
         class="message-wrapper"
         :data-message-id="item.id"
-        :ref="el => setItemRef(item.id, el)"
+        :ref="(el) => setItemRef(item.id, el)"
       >
-        <chat-prompt
+         <chat-prompt
           v-if="item.type === 'prompt'"
           :columns="columns"
           :message="item"
-        />
-        <chat-response
+        /> <chat-response
           v-else
           :chat="chat"
           :columns="columns"
           :messages="item"
         />
       </div>
+
     </div>
-    
+
     <div v-if="loading" class="loading-indicator">
-      <span>{{ $t('chat.loading') }}</span>
+       <span>{{ $t("chat.loading") }}</span
+      >
     </div>
+
   </div>
+
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import ChatPrompt from './ChatPrompt.vue'
-import ChatResponse from './ChatResponse.vue'
-import { throttle } from '@/utils/debounce'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
+import ChatPrompt from "./ChatPrompt.vue";
+import ChatResponse from "./ChatResponse.vue";
+import { throttle } from "@/utils/debounce";
 
 const props = defineProps({
   columns: {
@@ -58,76 +60,81 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+});
 
-const emit = defineEmits(['load-more'])
+const emit = defineEmits(["load-more"]);
 
-const scrollWrapper = ref(null)
-const contentContainer = ref(null)
-const itemRefs = ref({})
-const itemHeights = ref(new Map())
-const estimatedHeight = 250
-const viewportBuffer = 2
-const scrollPosition = ref(0)
+const scrollWrapper = ref(null);
+const contentContainer = ref(null);
+const itemRefs = ref({});
+const itemHeights = ref(new Map());
+const estimatedHeight = 250;
+const viewportBuffer = 2;
+const scrollPosition = ref(0);
 
 const averageItemHeight = computed(() => {
-  if (itemHeights.value.size === 0) return estimatedHeight
-  let total = 0
-  itemHeights.value.forEach(h => total += h)
-  return total / itemHeights.value.size || estimatedHeight
-})
+  if (itemHeights.value.size === 0) return estimatedHeight;
+  let total = 0;
+  itemHeights.value.forEach((h) => (total += h));
+  return total / itemHeights.value.size || estimatedHeight;
+});
 
 const visibleItems = computed(() => {
-  if (!scrollWrapper.value || props.messages.length === 0) return []
-  
-  const clientHeight = scrollWrapper.value.clientHeight
-  const startIdx = Math.max(0, Math.floor(scrollPosition.value / averageItemHeight.value) - viewportBuffer)
+  if (!scrollWrapper.value || props.messages.length === 0) return [];
+
+  const clientHeight = scrollWrapper.value.clientHeight;
+  const startIdx = Math.max(
+    0,
+    Math.floor(scrollPosition.value / averageItemHeight.value) - viewportBuffer,
+  );
   const endIdx = Math.min(
     props.messages.length,
-    Math.floor((scrollPosition.value + clientHeight) / averageItemHeight.value) + viewportBuffer
-  )
-  
-  return props.messages.slice(startIdx, endIdx)
-})
+    Math.floor(
+      (scrollPosition.value + clientHeight) / averageItemHeight.value,
+    ) + viewportBuffer,
+  );
+
+  return props.messages.slice(startIdx, endIdx);
+});
 
 const totalContentHeight = computed(() => {
   if (itemHeights.value.size === props.messages.length) {
-    let total = 0
-    props.messages.forEach(msg => {
-      total += itemHeights.value.get(msg.id) || averageItemHeight.value
-    })
-    return total
+    let total = 0;
+    props.messages.forEach((msg) => {
+      total += itemHeights.value.get(msg.id) || averageItemHeight.value;
+    });
+    return total;
   }
-  return props.messages.length * averageItemHeight.value
-})
+  return props.messages.length * averageItemHeight.value;
+});
 
 function setItemRef(id, el) {
   if (el) {
-    itemRefs.value[id] = el
+    itemRefs.value[id] = el;
     nextTick(() => {
       if (el && el.offsetHeight > 0) {
-        itemHeights.value.set(id, el.offsetHeight)
+        itemHeights.value.set(id, el.offsetHeight);
       }
-    })
+    });
   }
 }
 
 const throttledScroll = throttle(() => {
-  if (!scrollWrapper.value) return
-  
-  scrollPosition.value = scrollWrapper.value.scrollTop
-  
-  const scrollTop = scrollWrapper.value.scrollTop
-  const scrollHeight = scrollWrapper.value.scrollHeight
-  const clientHeight = scrollWrapper.value.clientHeight
-  
+  if (!scrollWrapper.value) return;
+
+  scrollPosition.value = scrollWrapper.value.scrollTop;
+
+  const scrollTop = scrollWrapper.value.scrollTop;
+  const scrollHeight = scrollWrapper.value.scrollHeight;
+  const clientHeight = scrollWrapper.value.clientHeight;
+
   if (scrollHeight - scrollTop - clientHeight < 500) {
-    emit('load-more')
+    emit("load-more");
   }
-}, 16)
+}, 16);
 
 function onScroll() {
-  throttledScroll()
+  throttledScroll();
 }
 
 function scrollToBottom(immediately = false) {
@@ -135,42 +142,49 @@ function scrollToBottom(immediately = false) {
     if (scrollWrapper.value) {
       scrollWrapper.value.scrollTo({
         top: scrollWrapper.value.scrollHeight,
-        behavior: immediately ? 'instant' : 'smooth'
-      })
+        behavior: immediately ? "instant" : "smooth",
+      });
     }
-  })
+  });
 }
 
 function measureHeights() {
   nextTick(() => {
     Object.entries(itemRefs.value).forEach(([id, el]) => {
       if (el && el.offsetHeight > 0 && !itemHeights.value.has(id)) {
-        itemHeights.value.set(id, el.offsetHeight)
+        itemHeights.value.set(id, el.offsetHeight);
       }
-    })
-  })
+    });
+  });
 }
 
-watch(() => props.messages.length, () => {
-  measureHeights()
-})
+watch(
+  () => props.messages.length,
+  () => {
+    measureHeights();
+  },
+);
 
-watch(() => props.messages, () => {
-  nextTick(() => {
-    scrollToBottom(true)
-  })
-}, { deep: true })
+watch(
+  () => props.messages,
+  () => {
+    nextTick(() => {
+      scrollToBottom(true);
+    });
+  },
+  { deep: true },
+);
 
 onMounted(() => {
-  measureHeights()
-})
+  measureHeights();
+});
 
 onUnmounted(() => {
-  itemRefs.value = {}
-  itemHeights.value.clear()
-})
+  itemRefs.value = {};
+  itemHeights.value.clear();
+});
 
-defineExpose({ scrollToBottom })
+defineExpose({ scrollToBottom });
 </script>
 
 <style scoped>
