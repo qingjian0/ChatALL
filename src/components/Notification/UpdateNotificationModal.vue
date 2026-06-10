@@ -29,7 +29,7 @@
 <script setup>
 import { ref } from "vue";
 import { compare } from "compare-versions";
-const { shell, ipcRenderer } = window.require("electron");
+import { shell, ipcRenderer } from "@/adapters";
 
 let versions = undefined;
 const snackbar = ref(false);

@@ -142,7 +142,7 @@ import {
 } from "./../ShortcutGuide/shortcut.const";
 import Messages from "@/store/messages";
 
-const { ipcRenderer } = window.require("electron");
+import { ipcRenderer } from "@/adapters";
 
 const store = useStore();
 const matomo = useMatomo();

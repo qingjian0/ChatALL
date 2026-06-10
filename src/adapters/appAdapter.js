@@ -1,75 +1,83 @@
 import { isElectron } from './platformDetector'
 
+function safeRequireElectron() {
+  try {
+    if (isElectron() && typeof window.require === 'function') {
+      return window.require('electron')
+    }
+  } catch (e) {
+    // Web environment
+  }
+  return null
+}
+
 const app = {
   getVersion: function () {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      return app.getVersion()
-    } else {
-      try {
-        return process.env.npm_package_version || '1.0.0'
-      } catch (e) {
-        return '1.0.0'
-      }
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      return electron.app.getVersion()
+    }
+    try {
+      return process.env.npm_package_version || '1.0.0'
+    } catch (e) {
+      return '1.0.0'
     }
   },
 
   getName: function () {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      return app.getName()
-    } else {
-      return 'ChatALL Web'
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      return electron.app.getName()
     }
+    return 'ChatALL Web'
   },
 
   getPath: function (name) {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      return app.getPath(name)
-    } else {
-      const paths = {
-        home: '/',
-        appData: '/',
-        userData: '/',
-        temp: '/tmp',
-        documents: '/documents',
-        downloads: '/downloads',
-      }
-      return paths[name] || '/'
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      return electron.app.getPath(name)
     }
+    const paths = {
+      home: '/',
+      appData: '/',
+      userData: '/',
+      temp: '/tmp',
+      documents: '/documents',
+      downloads: '/downloads',
+    }
+    return paths[name] || '/'
   },
 
   quit: function () {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      app.quit()
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      electron.app.quit()
     } else {
       console.warn('app.quit is not applicable in web environment')
     }
   },
 
   relaunch: function () {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      app.relaunch()
-      app.quit()
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      electron.app.relaunch()
+      electron.app.quit()
     } else {
       window.location.reload()
     }
   },
 
   setAppUserModelId: function (id) {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      app.setAppUserModelId(id)
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      electron.app.setAppUserModelId(id)
     }
   },
 
   on: function (event, listener) {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      app.on(event, listener)
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      electron.app.on(event, listener)
     } else {
       if (event === 'ready') {
         setTimeout(listener, 0)
@@ -81,9 +89,9 @@ const app = {
   },
 
   off: function (event, listener) {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      app.off(event, listener)
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      electron.app.off(event, listener)
     } else {
       if (event === 'window-all-closed') {
         window.removeEventListener('beforeunload', listener)
@@ -93,21 +101,19 @@ const app = {
   },
 
   isPackaged: function () {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      return app.isPackaged
-    } else {
-      return process.env.NODE_ENV === 'production'
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      return electron.app.isPackaged
     }
+    return process.env.NODE_ENV === 'production'
   },
 
   getLocale: function () {
-    if (isElectron()) {
-      const { app } = window.require('electron')
-      return app.getLocale()
-    } else {
-      return navigator.language || 'en'
+    const electron = safeRequireElectron()
+    if (electron?.app) {
+      return electron.app.getLocale()
     }
+    return navigator.language || 'en'
   },
 }
 

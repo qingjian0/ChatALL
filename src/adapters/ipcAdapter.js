@@ -56,7 +56,14 @@ class WebEventBus {
 
 const webEventBus = new WebEventBus()
 
-const electronIpcRenderer = isElectron() ? window.require.electron.ipcRenderer : null
+let electronIpcRenderer = null
+try {
+  if (isElectron() && typeof window.require === 'function') {
+    electronIpcRenderer = window.require('electron').ipcRenderer
+  }
+} catch (e) {
+  // Web environment, no Electron available
+}
 
 const ipcRenderer = {
   on: (channel, listener) => {

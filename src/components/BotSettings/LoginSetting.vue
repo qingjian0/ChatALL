@@ -11,7 +11,7 @@
 </template>
 
 <script>
-const { ipcRenderer } = window.require("electron");
+import { ipcRenderer } from "@/adapters";
 
 export default {
   props: {

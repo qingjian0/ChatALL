@@ -1,10 +1,21 @@
 import { isElectron } from './platformDetector'
 
+function safeRequireElectron() {
+  try {
+    if (isElectron() && typeof window.require === 'function') {
+      return window.require('electron')
+    }
+  } catch (e) {
+    // Web environment
+  }
+  return null
+}
+
 const shell = {
   openExternal: async function (url) {
-    if (isElectron()) {
-      const { shell } = window.require('electron')
-      return shell.openExternal(url)
+    const electron = safeRequireElectron()
+    if (electron?.shell) {
+      return electron.shell.openExternal(url)
     } else {
       return new Promise((resolve, reject) => {
         const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
@@ -19,9 +30,9 @@ const shell = {
   },
 
   openPath: async function (path) {
-    if (isElectron()) {
-      const { shell } = window.require('electron')
-      return shell.openPath(path)
+    const electron = safeRequireElectron()
+    if (electron?.shell) {
+      return electron.shell.openPath(path)
     } else {
       console.warn('shell.openPath is not supported in web environment')
       return Promise.resolve('')
@@ -29,9 +40,9 @@ const shell = {
   },
 
   showItemInFolder: async function (fullPath) {
-    if (isElectron()) {
-      const { shell } = window.require('electron')
-      return shell.showItemInFolder(fullPath)
+    const electron = safeRequireElectron()
+    if (electron?.shell) {
+      return electron.shell.showItemInFolder(fullPath)
     } else {
       console.warn('shell.showItemInFolder is not supported in web environment')
       return Promise.resolve()
@@ -39,21 +50,25 @@ const shell = {
   },
 
   beep: function () {
-    if (isElectron()) {
-      const { shell } = window.require('electron')
-      shell.beep()
+    const electron = safeRequireElectron()
+    if (electron?.shell) {
+      electron.shell.beep()
     } else {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-      const oscillator = audioContext.createOscillator()
-      const gainNode = audioContext.createGain()
-      oscillator.connect(gainNode)
-      gainNode.connect(audioContext.destination)
-      oscillator.frequency.value = 800
-      oscillator.type = 'sine'
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1)
-      oscillator.start(audioContext.currentTime)
-      oscillator.stop(audioContext.currentTime + 0.1)
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+        const oscillator = audioContext.createOscillator()
+        const gainNode = audioContext.createGain()
+        oscillator.connect(gainNode)
+        gainNode.connect(audioContext.destination)
+        oscillator.frequency.value = 800
+        oscillator.type = 'sine'
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1)
+        oscillator.start(audioContext.currentTime)
+        oscillator.stop(audioContext.currentTime + 0.1)
+      } catch (e) {
+        console.warn('Audio not supported')
+      }
     }
   },
 

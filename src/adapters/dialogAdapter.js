@@ -1,10 +1,32 @@
 import { isElectron } from './platformDetector'
 
+function safeRequireElectron() {
+  try {
+    if (isElectron() && typeof window.require === 'function') {
+      return window.require('electron')
+    }
+  } catch (e) {
+    // Web environment
+  }
+  return null
+}
+
+function getDialogModule() {
+  const electron = safeRequireElectron()
+  if (electron?.dialog) {
+    return electron.dialog
+  }
+  if (electron?.remote?.dialog) {
+    return electron.remote.dialog
+  }
+  return null
+}
+
 const dialog = {
   showErrorBox: async function (title, content) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote || window.require('electron')
-      dialog.showErrorBox(title, content)
+    const electronDialog = getDialogModule()
+    if (electronDialog) {
+      electronDialog.showErrorBox(title, content)
     } else {
       console.error(`[${title}] ${content}`)
       alert(`${title}\n\n${content}`)
@@ -13,9 +35,9 @@ const dialog = {
   },
 
   showMessageBox: async function (options) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote || window.require('electron')
-      return dialog.showMessageBox(options)
+    const electronDialog = getDialogModule()
+    if (electronDialog) {
+      return electronDialog.showMessageBox(options)
     } else {
       const buttons = options.buttons || ['OK']
       const message = options.message || ''
@@ -37,9 +59,9 @@ const dialog = {
   },
 
   showOpenDialog: async function (options) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote || window.require('electron')
-      return dialog.showOpenDialog(options)
+    const electronDialog = getDialogModule()
+    if (electronDialog) {
+      return electronDialog.showOpenDialog(options)
     } else {
       return new Promise((resolve) => {
         const input = document.createElement('input')
@@ -61,9 +83,9 @@ const dialog = {
   },
 
   showSaveDialog: async function (options) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote || window.require('electron')
-      return dialog.showSaveDialog(options)
+    const electronDialog = getDialogModule()
+    if (electronDialog) {
+      return electronDialog.showSaveDialog(options)
     } else {
       return new Promise((resolve) => {
         const input = document.createElement('input')
@@ -79,9 +101,9 @@ const dialog = {
   },
 
   showMessageBoxSync: function (options) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote || window.require('electron')
-      return dialog.showMessageBoxSync(options)
+    const electronDialog = getDialogModule()
+    if (electronDialog) {
+      return electronDialog.showMessageBoxSync(options)
     } else {
       const buttons = options.buttons || ['OK']
       const message = options.message || ''
@@ -99,9 +121,9 @@ const dialog = {
   },
 
   showOpenDialogSync: function (options) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote || window.require('electron')
-      return dialog.showOpenDialogSync(options)
+    const electronDialog = getDialogModule()
+    if (electronDialog) {
+      return electronDialog.showOpenDialogSync(options)
     } else {
       console.warn('dialog.showOpenDialogSync is not fully supported in web environment')
       return { filePaths: [], canceled: true }
@@ -109,9 +131,9 @@ const dialog = {
   },
 
   showSaveDialogSync: function (options) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote || window.require('electron')
-      return dialog.showSaveDialogSync(options)
+    const electronDialog = getDialogModule()
+    if (electronDialog) {
+      return electronDialog.showSaveDialogSync(options)
     } else {
       console.warn('dialog.showSaveDialogSync is not fully supported in web environment')
       return { filePath: '', canceled: true }

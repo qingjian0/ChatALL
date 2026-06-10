@@ -112,8 +112,7 @@ import ConfirmModal from "@/components/ConfirmModal.vue";
 import i18n from "@/i18n";
 import { onMounted, reactive, ref, watch } from "vue";
 
-const electron = window.require("electron");
-const ipcRenderer = electron.ipcRenderer;
+import { ipcRenderer } from "@/adapters";
 const confirmModal = ref(null);
 
 const proxySettings = ref({});

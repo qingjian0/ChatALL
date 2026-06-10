@@ -1,9 +1,8 @@
 <template> <login-setting :bot="bot"></login-setting> </template>
 
 <script>
-const electron = window.require("electron");
-const ipcRenderer = electron.ipcRenderer;
 import { mapState, mapMutations } from "vuex";
+import { ipcRenderer } from "@/adapters";
 
 import Bot from "@/bots/MOSSBot";
 import LoginSetting from "@/components/BotSettings/LoginSetting.vue";

@@ -4,7 +4,7 @@
 import Bot from "@/bots/ClaudeAIBot";
 import LoginSetting from "@/components/BotSettings/LoginSetting.vue";
 import { mapMutations } from "vuex";
-const { ipcRenderer } = window.require("electron");
+import { ipcRenderer } from "@/adapters";
 
 export default {
   components: {

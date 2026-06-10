@@ -420,9 +420,9 @@ function handleClick(event) {
   }
   // Open in external browser
   event.preventDefault();
-  const electron = window.require("electron");
+  const { shell } = await import("@/adapters");
   const url = target.href || target.parentElement.href;
-  electron.shell.openExternal(url);
+  shell.openExternal(url);
 }
 
 async function resendPrompt(responseMessage) {

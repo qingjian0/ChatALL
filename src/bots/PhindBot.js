@@ -3,7 +3,7 @@ import store from "@/store";
 import AsyncLock from "async-lock";
 import axios from "axios";
 import { SSE } from "sse.js";
-const { ipcRenderer } = window.require("electron");
+import { ipcRenderer } from "@/adapters";
 
 export default class PhindBot extends Bot {
   static _brandId = "phind"; // Brand id of the bot, should be unique. Used in i18n.

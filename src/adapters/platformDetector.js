@@ -6,8 +6,23 @@ const PlatformType = {
 
 const detectPlatform = () => {
   if (typeof window !== 'undefined') {
-    if (window.require?.electron?.ipcRenderer) {
-      return PlatformType.ELECTRON
+    // Check Electron environment safely
+    try {
+      if (window.process?.versions?.electron) {
+        return PlatformType.ELECTRON
+      }
+    } catch (e) {
+      // Not Electron
+    }
+    try {
+      if (typeof window.require === 'function') {
+        const electron = window.require('electron')
+        if (electron?.ipcRenderer || electron?.remote) {
+          return PlatformType.ELECTRON
+        }
+      }
+    } catch (e) {
+      // Not Electron or Webpack build-time error
     }
     
     const userAgent = navigator.userAgent.toLowerCase()

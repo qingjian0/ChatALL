@@ -138,7 +138,7 @@ import ClaudeAPIBotSettings from "./BotSettings/ClaudeAPIBotSettings.vue";
 import GroqAPIBotSettings from "./BotSettings/GroqAPIBotSettings.vue";
 import xAIAPIBotSettings from "./BotSettings/xAIAPIBotSettings.vue";
 
-const { ipcRenderer } = window.require("electron");
+import { ipcRenderer } from "@/adapters";
 const { t: $t, locale } = useI18n();
 const store = useStore();
 const vuetifyTheme = useTheme();
