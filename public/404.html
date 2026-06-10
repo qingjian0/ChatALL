@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta http-equiv="refresh" content="0;URL='./'" />
+    <title>ChatALL - Redirecting...</title>
+    <script type="text/javascript">
+      (function() {
+        var path = window.location.pathname;
+        var basePath = '/ChatALL/';
+        
+        if (path.startsWith(basePath)) {
+          path = path.substring(basePath.length);
+        }
+        
+        var search = window.location.search;
+        var hash = window.location.hash;
+        
+        window.location.replace(basePath + '?' + path + search + hash);
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <p>Redirecting... If you are not redirected automatically, <a href="./">click here</a>.</p>
+    </noscript>
+  </body>
+</html>

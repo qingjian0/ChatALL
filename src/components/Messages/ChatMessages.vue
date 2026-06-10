@@ -1,46 +1,26 @@
 <template>
-   <v-container v-if="loading" class="ma-0 position-fixed" style="z-index: 1"
-    > <v-label class="bg-background" style="opacity: 1">{{
-      $t("chat.loading")
-    }}</v-label
-    > </v-container
-  >
-  <div class="messages">
-
-    <div
-      class="message-grid"
-      :style="{ gridTemplateColumns: gridTemplateColumns }"
-    >
-       <template v-for="(message, index) in currentChatMessages" :key="index"
-        > <chat-prompt
-          v-if="message.type === 'prompt'"
-          :columns="columns"
-          :message="message"
-        ></chat-prompt
-        > <chat-response
-          v-else
-          :chat="chat"
-          :columns="columns"
-          :messages="message"
-        ></chat-response
-        > </template
-      >
-    </div>
-
-  </div>
-
+  <v-container v-if="loading" class="ma-0 position-fixed" style="z-index: 1">
+    <v-label class="bg-background" style="opacity: 1">{{ $t('chat.loading') }}</v-label>
+  </v-container>
+  
+  <virtual-chat-messages
+    ref="virtualMessagesRef"
+    :columns="columns"
+    :chat="chat"
+    :messages="currentChatMessages"
+    :loading="isLoading"
+    @load-more="handleLoadMore"
+  />
 </template>
 
 <script setup>
-import Messages from "@/store/messages";
-import { liveQuery } from "dexie";
-import { computed, nextTick, onMounted, ref, watch } from "vue";
-import { useStore } from "vuex";
-import ChatPrompt from "./ChatPrompt.vue";
-import ChatResponse from "./ChatResponse.vue";
-import { autoScrollToBottom, scrollToBottom } from "@/helpers/scroll-helper";
+import { ref, computed, watch, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { useMessageStore } from '@/stores/messageStore'
+import VirtualChatMessages from './VirtualChatMessages.vue'
 
-const store = useStore();
+const store = useStore()
+const messageStore = useMessageStore()
 
 const props = defineProps({
   columns: {
@@ -50,97 +30,49 @@ const props = defineProps({
   chat: {
     type: Object,
   },
-});
+})
 
-const loading = ref(false);
-const gridTemplateColumns = computed(() => `repeat(${props.columns}, 1fr)`);
-const currentChatMessages = ref([]);
-let createChatMessageLiveQuery = (index) => {
-  return liveQuery(async () => {
-    const keys = await Messages.table
-      .where("chatIndex")
-      .equals(index)
-      .primaryKeys();
-    const messages = await Messages.table.bulkGet(keys);
-    messages.sort((a, b) => a.createdTime - b.createdTime);
-    const groupedMessage = [];
-    let responses = Object.create(null);
-    for (let i = 0; i < messages.length; i++) {
-      const message = messages[i];
-      if (message.type === "prompt") {
-        if (Object.keys(responses).length !== 0) {
-          groupedMessage.push.apply(groupedMessage, Object.values(responses));
-        }
-        groupedMessage.push(message);
-        responses = Object.create(null);
-        continue;
-      }
-      if (message.hide !== true) {
-        if (!responses[message.className]) {
-          // group responses with same bot for carousel
-          responses[message.className] = [];
-        }
-        responses[message.className].push(message);
-      }
-    }
-    if (Object.keys(responses).length !== 0) {
-      groupedMessage.push.apply(groupedMessage, Object.values(responses));
-    }
-    currentChatMessages.value = groupedMessage;
-    nextTick(() => autoScrollToBottom());
-  });
-};
+const loading = ref(false)
+const isLoading = computed(() => loading.value || messageStore.loading)
+const virtualMessagesRef = ref(null)
+const currentPage = ref(0)
 
-const currentChatIndex = computed(() => store.state.currentChatIndex);
-let currentMessageSub;
-let scrollToBottomFirst;
+const currentChatIndex = computed(() => store.state.currentChatIndex)
+
+const currentChatMessages = computed(() => {
+  return messageStore.groupedMessages
+})
+
+async function loadMessages(chatIndex) {
+  loading.value = true
+  currentPage.value = 0
+  await messageStore.loadAllMessages(chatIndex)
+  loading.value = false
+}
+
+async function handleLoadMore() {
+  currentPage.value++
+  await messageStore.loadMessages(currentChatIndex.value, currentPage.value)
+}
+
 watch(
   currentChatIndex,
-  (newChat, oldChat) => {
+  async (newChat, oldChat) => {
     if (newChat !== oldChat) {
-      loading.value = true;
-      scrollToBottomFirst = true;
-      if (currentMessageSub) {
-        currentMessageSub.unsubscribe();
-      }
-      currentMessageSub = createChatMessageLiveQuery(
-        store.state.currentChatIndex,
-      ).subscribe(() => {
-        loading.value = false;
-        if (scrollToBottomFirst) {
-          scrollToBottomFirst = false;
-          nextTick(() => scrollToBottom({ immediately: true }));
-        }
-      });
+      await loadMessages(newChat)
     }
   },
-  { immediate: true },
-);
+  { immediate: true }
+)
 
 onMounted(async () => {
-  await Messages.table
-    .filter((message) => message.done !== true)
-    .modify({ done: true });
-});
+  await messageStore.loadMessages(currentChatIndex.value)
+  
+  await messageStore.loadMessages(
+    store.state.currentChatIndex,
+  )
+})
 </script>
 
 <style scoped>
-.messages {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  height: 100%;
-  overflow-y: auto;
-  gap: 16px;
-  padding: 0;
-}
-
-.message-grid {
-  display: grid;
-  grid-gap: 16px;
-  width: 100%;
-  padding: 2rem;
-}
 </style>
-

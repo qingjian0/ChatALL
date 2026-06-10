@@ -1,31 +1,154 @@
-name: Deploy to Github Pages
+name: Deploy to Environments
 
 on:
   push:
     branches:
       - main
+      - develop
+      - staging
+  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
-  build-and-deploy:
+  validate:
+    name: Validate Environment and Dependencies
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "20.x"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Run deployment verification
+        run: node scripts/deploy-verify.js
+
+      - name: Run lint check
+        run: npm run lint
+
+  build:
+    name: Build Application
+    needs: validate
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: [development, staging, production]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Load environment variables
+        run: |
+          if [ -f .env.${{ matrix.env }} ]; then
+            cp .env.${{ matrix.env }} .env
+          else
+            echo "Environment file .env.${{ matrix.env }} not found"
+            exit 1
+          fi
+
+      - name: Build application
         run: npm run build
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: dist # The folder the action should deploy.
+          name: dist-${{ matrix.env }}
+          path: dist/
+
+  deploy-dev:
+    name: Deploy to Development
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: development
+      url: https://dev.chatall.com
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-development
+          path: dist/
+
+      - name: Deploy to development environment
+        run: |
+          echo "Deploying to development environment..."
+          # Add your deployment commands here
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging'
+    environment:
+      name: staging
+      url: https://staging.chatall.com
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-staging
+          path: dist/
+
+      - name: Deploy to staging environment
+        run: |
+          echo "Deploying to staging environment..."
+          # Add your deployment commands here
+
+      - name: Run health check
+        run: |
+          echo "Running health check on staging..."
+          # Add health check commands here
+
+  deploy-prod:
+    name: Deploy to Production
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://chatall.com
+      protection:
+        required_approving_review_count: 1
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-production
+          path: dist/
+
+      - name: Deploy to production environment
+        run: |
+          echo "Deploying to production environment..."
+          # Add your deployment commands here
+
+      - name: Run post-deployment health check
+        run: |
+          echo "Running post-deployment health check..."
+          # Add health check commands here
+
+      - name: Send deployment notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()

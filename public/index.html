@@ -5,9 +5,104 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-    <!-- Vue devtools -->
+    
+    <meta name="theme-color" content="#062AAA" />
+    <meta name="description" content="Chat with multiple AI bots and discover the best." />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://static.geetest.com" crossorigin />
+    <link rel="preconnect" href="https://matomo.chatall.ai" crossorigin />
+    
+    <link rel="preload" href="<%= BASE_URL %>fonts/roboto-v30-latin-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="<%= BASE_URL %>fonts/roboto-v30-latin-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="<%= BASE_URL %>fonts/material-icons.woff2" as="font" type="font/woff2" crossorigin />
+    
+    <link rel="preload" href="<%= BASE_URL %>js/runtime.js" as="script" />
+    <link rel="preload" href="<%= BASE_URL %>js/vendor-core.js" as="script" />
+    <link rel="preload" href="<%= BASE_URL %>js/vendor-vuetify.js" as="script" />
+    
+    <link rel="prefetch" href="<%= BASE_URL %>js/vendor-markdown.js" as="script" />
+    <link rel="prefetch" href="<%= BASE_URL %>js/vendor-langchain.js" as="script" />
+    
     <%= process.env.NODE_ENV === 'development' ? '<script src="http://localhost:8098"></script>' : '' %>
+    
     <title>ChatALL</title>
+    
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        font-family: 'Roboto', sans-serif;
+      }
+      
+      #app {
+        min-height: 100vh;
+      }
+      
+      .app-skeleton {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      
+      .skeleton-header {
+        height: 64px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        margin-bottom: 16px;
+      }
+      
+      .skeleton-main {
+        flex: 1;
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+      }
+      
+      .skeleton-card {
+        background: white;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .skeleton-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        margin-bottom: 12px;
+      }
+      
+      .skeleton-title {
+        height: 20px;
+        width: 70%;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        margin-bottom: 8px;
+      }
+      
+      .skeleton-text {
+        height: 16px;
+        width: 50%;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+      
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+    </style>
   </head>
   <body>
     <noscript>
@@ -17,7 +112,55 @@
         continue.</strong
       >
     </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
+    
+    <div id="app">
+      <div class="app-skeleton">
+        <div class="skeleton-header"></div>
+        <div class="skeleton-main">
+          <div class="skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+          </div>
+          <div class="skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+          </div>
+          <div class="skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      (function() {
+        const loadScript = (src, callback) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = callback;
+          script.onerror = callback;
+          document.head.appendChild(script);
+        };
+        
+        const loadGeetest = () => {
+          fetch('https://static.geetest.com/g5/gd.js')
+            .then(response => response.text())
+            .then(text => {
+              const script = document.createElement('script');
+              script.textContent = text;
+              document.head.appendChild(script);
+            })
+            .catch(() => {});
+        };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+          setTimeout(loadGeetest, 2000);
+        });
+      })();
+    </script>
   </body>
 </html>

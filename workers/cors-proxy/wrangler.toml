@@ -1,0 +1,29 @@
+name = "chatall-cors-proxy"
+type = "javascript"
+
+# Cloudflare 配置
+account_id = "YOUR_ACCOUNT_ID"
+workers_dev = true
+route = "chatall-proxy.workers.dev/*"
+
+# 环境变量
+[vars]
+ALLOWED_ORIGINS = '["https://chatall.app", "https://www.chatall.app", "https://chatall-web.vercel.app", "http://localhost:8080"]'
+ALLOWED_TARGETS = '["api.openai.com", "api.anthropic.com", "generativelanguage.googleapis.com", "api.groq.com"]'
+RATE_LIMIT_REQUESTS = 100
+RATE_LIMIT_WINDOW_SECONDS = 60
+MAX_REQUEST_SIZE = 10485760
+
+# 触发器配置
+[triggers]
+crons = [
+  "0 0 * * *"  # 每天凌晨执行清理任务
+]
+
+# 兼容性标志
+compatibility_flags = ["nodejs_compat"]
+
+# 资源绑定（如果使用 KV 存储）
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT_KV"
+# id = "YOUR_KV_NAMESPACE_ID"

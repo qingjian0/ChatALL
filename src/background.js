@@ -238,6 +238,23 @@ async function createWindow() {
     }
   }
 
+  // Add security headers to all responses
+  win.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      const headers = { ...details.responseHeaders };
+      
+      headers["X-Frame-Options"] = ["DENY"];
+      headers["X-Content-Type-Options"] = ["nosniff"];
+      headers["X-XSS-Protection"] = ["1; mode=block"];
+      headers["Referrer-Policy"] = ["strict-origin-when-cross-origin"];
+      headers["Permissions-Policy"] = [
+        "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), clipboard-read=(), clipboard-write=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), gamepad=(), geolocation=(), gyroscope=(), layout-animations=(self), legacy-image-formats=(self), magnetometer=(), microphone=(), midi=(), navigation-override=(), oversized-images=(self), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(self), unoptimized-images=(self), unsized-media=(self), usb=(), web-share=(), xr-spatial-tracking=()"
+      ];
+      
+      callback({ responseHeaders: headers });
+    },
+  );
+
   // Modify the Referer header for each request and special patch for some sites.
   win.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callback) => {

@@ -1,0 +1,6 @@
+{
+  "error": "Internal server error",
+  "message": "An unexpected error occurred",
+  "status": 500,
+  "timestamp": "$time_local"
+}

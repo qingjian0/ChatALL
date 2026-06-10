@@ -1,0 +1,6 @@
+{
+  "error": "Forbidden",
+  "message": "Origin not allowed",
+  "status": 403,
+  "timestamp": "$time_local"
+}

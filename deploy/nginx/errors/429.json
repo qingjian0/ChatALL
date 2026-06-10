@@ -1,0 +1,7 @@
+{
+  "error": "Rate limit exceeded",
+  "message": "Too many requests, please try again later",
+  "status": 429,
+  "retryAfter": 60,
+  "timestamp": "$time_local"
+}
