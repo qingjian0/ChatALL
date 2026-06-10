@@ -156,8 +156,26 @@ async function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
       webSecurity: false,
-      preload: "./preload.js",
+      preload: path.join(__dirname, "preload.js"),
     },
+  });
+
+  // Watch for webContents load failures
+  win.webContents.on("did-fail-load", (event, errorCode, errorDesc) => {
+    console.error(
+      `[Electron] Web contents failed to load: ${errorCode} - ${errorDesc}`,
+    );
+  });
+
+  win.webContents.on("crashed", (event, killed) => {
+    console.error(
+      `[Electron] Renderer process ${killed ? "killed" : "crashed"}`,
+    );
+  });
+
+  // Only show window after content is fully loaded to prevent blank flash
+  win.once("ready-to-show", () => {
+    win.show();
   });
 
   mainWindow = win;

@@ -47,12 +47,6 @@ await migrateChatsMessagesThreads();
 await Chats.addFirstChatIfEmpty();
 
 const defaultTheme = await resolveTheme(store.state.mode, ipcRenderer);
-store.commit("setTheme", defaultTheme);
-applyTheme(defaultTheme);
-ipcRenderer.invoke("set-is-show-menu-bar", store.state.general.isShowMenuBar);
-ipcRenderer.on("commit", (e, mutation, value) => {
-  store.commit(mutation, value);
-});
 
 const vuetify = createVuetify({
   components: { ...components },
@@ -98,6 +92,13 @@ const vuetify = createVuetify({
       },
     },
   },
+});
+
+store.commit("setTheme", defaultTheme);
+applyTheme(defaultTheme, vuetify);
+ipcRenderer.invoke("set-is-show-menu-bar", store.state.general.isShowMenuBar);
+ipcRenderer.on("commit", (e, mutation, value) => {
+  store.commit(mutation, value);
 });
 
 // Inject geetest script for iFlytek Spark
