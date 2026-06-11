@@ -47,14 +47,16 @@ try {
   console.warn('[IPC Adapter] Electron IPC not available')
 }
 
+function webInvoke(channel, ...args) {
+  return new Promise(resolve => {
+    webEventBus.emit(channel, ...args, resolve)
+  })
+}
+
 const ipcRenderer = {
   on: electronIpcRenderer?.on?.bind(electronIpcRenderer) || webEventBus.on.bind(webEventBus),
   send: electronIpcRenderer?.send?.bind(electronIpcRenderer) || webEventBus.emit.bind(webEventBus),
-  invoke: electronIpcRenderer?.invoke?.bind(electronIpcRenderer) || async (channel, ...args) => {
-    return new Promise(resolve => {
-      webEventBus.emit(channel, ...args, resolve)
-    })
-  },
+  invoke: electronIpcRenderer?.invoke?.bind(electronIpcRenderer) || webInvoke,
   removeListener: electronIpcRenderer?.removeListener?.bind(electronIpcRenderer) || webEventBus.removeListener.bind(webEventBus),
   removeAllListeners: electronIpcRenderer?.removeAllListeners?.bind(electronIpcRenderer) || webEventBus.removeAllListeners.bind(webEventBus),
   emit: webEventBus.emit.bind(webEventBus),

@@ -1,13 +1,13 @@
 import LangChainBot from "@/bots/LangChainBot";
-import { ChatBaiduWenxin } from "@langchain/community/chat_models/baiduwenxin";
+import { ChatOpenAI } from "@langchain/openai";
 import AsyncLock from "async-lock";
 import store from "@/store";
 
 export default class WenxinQianfanBot extends LangChainBot {
-  static _brandId = "wenxinQianfan"; // ID of the bot, should be unique
-  static _className = "WenxinQianfanBot"; // Class name of the bot
-  static _logoFilename = "wenxin-qianfan-logo.png"; // Place it in public/bots/
-  static _model = "ERNIE-Bot"; // Model name
+  static _brandId = "wenxinQianfan";
+  static _className = "WenxinQianfanBot";
+  static _logoFilename = "wenxin-qianfan-logo.png";
+  static _model = "ERNIE-Bot";
   static _lock = new AsyncLock();
 
   constructor() {
@@ -26,11 +26,14 @@ export default class WenxinQianfanBot extends LangChainBot {
 
   _setupModel() {
     const { apiKey, secretKey } = store.state.wenxinQianfan;
-    const chatModel = new ChatBaiduWenxin({
-      modelName: this.constructor._model,
-      baiduApiKey: apiKey,
-      baiduSecretKey: secretKey,
+    const chatModel = new ChatOpenAI({
+      model: this.constructor._model,
+      apiKey: apiKey,
+      baseURL: "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie_bot",
       streaming: true,
+      defaultHeaders: {
+        "Content-Type": "application/json",
+      },
     });
     return chatModel;
   }

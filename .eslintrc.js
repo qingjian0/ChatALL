@@ -1,17 +1,17 @@
-{
-  "root": true,
-  "env": {
-    "node": true,
-    "browser": true
+module.exports = {
+  root: true,
+  env: {
+    node: true,
+    browser: true
   },
-  "extends": [
+  extends: [
     "plugin:vue/vue3-recommended",
     "@vue/eslint-config-prettier"
   ],
-  "parserOptions": {
-    "parser": "babel-eslint"
+  parserOptions: {
+    parser: "babel-eslint"
   },
-  "rules": {
+  rules: {
     "vue/no-unused-vars": "warn",
     "vue/no-unused-components": "warn",
     "prettier/prettier": "warn",

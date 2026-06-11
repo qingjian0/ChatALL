@@ -1,5 +1,5 @@
 import Bot from "@/bots/Bot";
-import { BufferMemory } from "langchain/memory";
+import { BufferMemory } from "@langchain/classic/memory";
 
 export default class LangChainBot extends Bot {
   static _brandId = "langChainBot";
