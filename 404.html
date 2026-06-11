@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ChatALL - Chat with all AI models</title>
+    <script>
+      // Single Page App redirect for GitHub Pages
+      // This ensures that refreshing deep links works correctly
+      (function() {
+        var path = window.location.pathname;
+        if (path !== '/' && path !== '/ChatALL/' && !path.includes('.')) {
+          window.history.replaceState({}, '', '/ChatALL/' + path);
+          window.location.reload();
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <script>
+      // Fallback for browsers that don't support history API
+      window.location.href = '/ChatALL/';
+    </script>
+  </body>
+</html>
