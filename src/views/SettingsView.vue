@@ -1,81 +1,49 @@
 <template>
-
-  <div class="settings-view">
-
-    <aside class="settings-sidebar">
-
-      <nav>
-         <router-link
-          to="/settings/bots"
-          class="nav-item"
-          :class="{ active: $route.name === 'SettingsBots' }"
-          > <span class="icon">🤖</span> <span>{{ t("settings.bots") }}</span
-          > </router-link
-        > <router-link
-          to="/settings/appearance"
-          class="nav-item"
-          :class="{ active: $route.name === 'SettingsAppearance' }"
-          > <span class="icon">🎨</span> <span>{{
-            t("settings.appearance")
-          }}</span
-          > </router-link
-        >
-      </nav>
-
-    </aside>
-
-    <main class="settings-content"> <router-view /> </main>
-
-  </div>
-
+  <v-container class="fill-height">
+    <v-layout>
+      <v-navigation-drawer permanent class="w-64">
+        <v-list>
+          <v-list-item @click="$router.push('/settings/bots')">
+            <v-list-item-icon>
+              <v-icon>mdi-bot</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('settings.bots') }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="$router.push('/settings/appearance')">
+            <v-list-item-icon>
+              <v-icon>mdi-palette</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('settings.appearance') }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="$router.push('/settings/account')">
+            <v-list-item-icon>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('settings.account') }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="$router.push('/settings/security')">
+            <v-list-item-icon>
+              <v-icon>mdi-shield</v-icon>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="$router.push('/settings/privacy')">
+            <v-list-item-icon>
+              <v-icon>mdi-eye</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('settings.privacy') }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="$router.push('/settings/advanced')">
+            <v-list-item-icon>
+              <v-icon>mdi-settings</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('settings.advanced') }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      
+      <v-main>
+        <router-view />
+      </v-main>
+    </v-layout>
+  </v-container>
 </template>
-
-<script setup>
-import { useI18n } from "vue-i18n";
-
-const { t } = useI18n();
-</script>
-
-<style scoped>
-.settings-view {
-  display: flex;
-  height: 100vh;
-}
-
-.settings-sidebar {
-  width: 200px;
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--border-color);
-  padding: 20px 0;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  color: var(--text-color);
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.nav-item:hover {
-  background: var(--hover-bg);
-}
-
-.nav-item.active {
-  background: var(--active-bg);
-  color: var(--primary-color);
-}
-
-.icon {
-  font-size: 18px;
-}
-
-.settings-content {
-  flex: 1;
-  padding: 24px;
-  overflow-y: auto;
-}
-</style>
-

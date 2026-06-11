@@ -1,15 +1,15 @@
 <template>
   <v-card>
-    <v-card-title>{{ $t('settings.account') }}</v-card-title>
+    <v-card-title>{{ $t('settings.privacy') }}</v-card-title>
     <v-card-text>
-      <v-text-field
-        v-model="email"
-        label="Email"
+      <v-switch
+        v-model="telemetry"
+        label="Enable telemetry"
         class="mb-4"
       />
-      <v-text-field
-        v-model="displayName"
-        label="Display Name"
+      <v-switch
+        v-model="analytics"
+        label="Enable analytics"
         class="mb-4"
       />
     </v-card-text>
@@ -24,10 +24,10 @@
 <script setup>
 import { ref } from 'vue'
 
-const email = ref('')
-const displayName = ref('')
+const telemetry = ref(true)
+const analytics = ref(true)
 
 function saveSettings() {
-  alert('Account settings saved')
+  alert('Privacy settings saved')
 }
 </script>

@@ -1,192 +1,105 @@
-import { isElectron } from "./platformDetector";
+import { isElectron } from './platformDetector'
 
-function safeRequireElectron() {
-  try {
-    if (isElectron() && typeof window.require === "function") {
-      return window.require("electron");
-    }
-  } catch (e) {
-    // Web environment
+let electronApp = null
+
+try {
+  if (isElectron() && typeof window.require === 'function') {
+    const { app } = window.require('electron').remote || window.require('electron')
+    electronApp = app
   }
-  return null;
+} catch (e) {
+  console.warn('[App Adapter] Electron App not available')
+}
+
+const storage = {
+  getItem: (key) => {
+    try {
+      const value = localStorage.getItem(key)
+      if (value) {
+        return JSON.parse(value)
+      }
+      return null
+    } catch (e) {
+      return localStorage.getItem(key)
+    }
+  },
+
+  setItem: (key, value) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value))
+    } catch (e) {
+      localStorage.setItem(key, String(value))
+    }
+  },
+
+  removeItem: (key) => {
+    localStorage.removeItem(key)
+  },
+
+  clear: () => {
+    localStorage.clear()
+  },
+
+  getAllKeys: () => {
+    return Object.keys(localStorage)
+  }
 }
 
 const app = {
-  getVersion: function () {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      return electron.app.getVersion();
+  getName: () => {
+    if (electronApp) {
+      return electronApp.getName()
+    }
+    return 'ChatALL'
+  },
+
+  getVersion: () => {
+    if (electronApp) {
+      return electronApp.getVersion()
     }
     try {
-      return process.env.npm_package_version || "1.0.0";
+      return require('../../package.json').version
     } catch (e) {
-      return "1.0.0";
+      return '3.0.0'
     }
   },
 
-  getName: function () {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      return electron.app.getName();
+  quit: () => {
+    if (electronApp) {
+      electronApp.quit()
+      return
     }
-    return "ChatALL Web";
+    console.warn('[App Adapter] quit not supported in web')
   },
 
-  getPath: function (name) {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      return electron.app.getPath(name);
+  relaunch: () => {
+    if (electronApp) {
+      electronApp.relaunch()
+      electronApp.quit()
+      return
     }
-    const paths = {
-      home: "/",
-      appData: "/",
-      userData: "/",
-      temp: "/tmp",
-      documents: "/documents",
-      downloads: "/downloads",
-    };
-    return paths[name] || "/";
+    window.location.reload()
   },
 
-  quit: function () {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      electron.app.quit();
-    } else {
-      console.warn("app.quit is not applicable in web environment");
+  getPath: (pathName) => {
+    if (electronApp) {
+      return electronApp.getPath(pathName)
     }
+    console.warn(`[App Adapter] getPath(${pathName}) not supported in web`)
+    return null
   },
 
-  relaunch: function () {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      electron.app.relaunch();
-      electron.app.quit();
-    } else {
-      window.location.reload();
+  setBadgeCount: (count) => {
+    if (electronApp) {
+      return electronApp.setBadgeCount(count)
+    }
+    if (document.title) {
+      document.title = count > 0 ? `(${count}) ChatALL` : 'ChatALL'
     }
   },
 
-  setAppUserModelId: function (id) {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      electron.app.setAppUserModelId(id);
-    }
-  },
+  storage
+}
 
-  on: function (event, listener) {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      electron.app.on(event, listener);
-    } else {
-      if (event === "ready") {
-        setTimeout(listener, 0);
-      } else if (event === "window-all-closed") {
-        window.addEventListener("beforeunload", listener);
-      }
-    }
-    return app;
-  },
-
-  off: function (event, listener) {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      electron.app.off(event, listener);
-    } else {
-      if (event === "window-all-closed") {
-        window.removeEventListener("beforeunload", listener);
-      }
-    }
-    return app;
-  },
-
-  isPackaged: function () {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      return electron.app.isPackaged;
-    }
-    return process.env.NODE_ENV === "production";
-  },
-
-  getLocale: function () {
-    const electron = safeRequireElectron();
-    if (electron?.app) {
-      return electron.app.getLocale();
-    }
-    return navigator.language || "en";
-  },
-};
-
-const storage = {
-  set: function (key, value) {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-      return true;
-    } catch (error) {
-      console.error("Failed to set storage:", error);
-      return false;
-    }
-  },
-
-  get: function (key, defaultValue = null) {
-    try {
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue;
-    } catch (error) {
-      console.error("Failed to get storage:", error);
-      return defaultValue;
-    }
-  },
-
-  remove: function (key) {
-    try {
-      localStorage.removeItem(key);
-      return true;
-    } catch (error) {
-      console.error("Failed to remove storage:", error);
-      return false;
-    }
-  },
-
-  clear: function () {
-    try {
-      localStorage.clear();
-      return true;
-    } catch (error) {
-      console.error("Failed to clear storage:", error);
-      return false;
-    }
-  },
-
-  setTemp: function (key, value) {
-    try {
-      sessionStorage.setItem(key, JSON.stringify(value));
-      return true;
-    } catch (error) {
-      console.error("Failed to set temp storage:", error);
-      return false;
-    }
-  },
-
-  getTemp: function (key, defaultValue = null) {
-    try {
-      const item = sessionStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue;
-    } catch (error) {
-      console.error("Failed to get temp storage:", error);
-      return defaultValue;
-    }
-  },
-
-  removeTemp: function (key) {
-    try {
-      sessionStorage.removeItem(key);
-      return true;
-    } catch (error) {
-      console.error("Failed to remove temp storage:", error);
-      return false;
-    }
-  },
-};
-
-export { app, storage };
+export { app, storage }
+export default app

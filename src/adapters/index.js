@@ -5,16 +5,13 @@ export {
   isWeb,
   isMobile,
   platform,
-} from "./platformDetector";
+} from './platformDetector'
 
-export { ipcRenderer, webEventBus } from "./ipcAdapter";
-export { nativeTheme, getSystemTheme } from "./themeAdapter";
-export { shell } from "./shellAdapter";
-export { dialog } from "./dialogAdapter";
-export { app, storage } from "./appAdapter";
-
-export * from "./errorHandler";
-export * from "./validator";
+export { ipcRenderer, webEventBus } from './ipcAdapter'
+export { nativeTheme, Theme, Mode, resolveTheme, applyTheme, watchSystemTheme } from './themeAdapter'
+export { shell } from './shellAdapter'
+export { dialog } from './dialogAdapter'
+export { app, storage } from './appAdapter'
 
 const platformAdapter = {
   PlatformType,
@@ -23,18 +20,18 @@ const platformAdapter = {
   isWeb,
   isMobile,
   detectPlatform,
-
+  
   ipc: {
     renderer: ipcRenderer,
     eventBus: webEventBus,
   },
-
+  
   theme: nativeTheme,
   shell,
   dialog,
   app,
   storage,
-};
+}
 
-export { platformAdapter };
-export default platformAdapter;
+export { platformAdapter }
+export default platformAdapter

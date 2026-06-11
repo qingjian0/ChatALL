@@ -1,102 +1,52 @@
 <template>
-
-  <div class="security-settings">
-     <v-card
-      > <v-card-title class="text-h5">Security Settings</v-card-title>
-      <v-card-text
-        > <v-container
-          > <v-card-title class="text-h6">Master Password</v-card-title>
-          <v-switch
-            v-model="requirePassword"
-            label="Require password on startup"
-            @change="updateSecurityOptions"
-          /> <v-divider class="my-4" /> <v-card-title class="text-h6"
-            >Idle Lock</v-card-title
-          > <v-switch
-            v-model="lockOnIdle"
-            label="Lock app when idle"
-            @change="updateSecurityOptions"
-          /> <v-text-field
-            v-model.number="idleTimeout"
-            label="Idle timeout (minutes)"
-            type="number"
-            :disabled="!lockOnIdle"
-            @change="updateSecurityOptions"
-          /> <v-divider class="my-4" /> <v-card-title class="text-h6"
-            >Encryption</v-card-title
-          > <v-switch
-            v-model="enableEncryption"
-            label="Enable data encryption"
-            @change="updateSecurityOptions"
-          /> <v-divider class="my-4" /> <v-card-title class="text-h6"
-            >Security Level</v-card-title
-          > <v-select
-            v-model="securityLevel"
-            :items="securityLevels"
-            label="Security Level"
-            @change="setSecurityLevel"
-          /> <v-divider class="my-4" /> <v-btn
-            color="error"
-            @click="resetSecurity"
-            > Reset Security Settings </v-btn
-          > </v-container
-        > </v-card-text
-      > </v-card
-    >
-  </div>
-
+  <v-card>
+    <v-card-title>{{ $t('settings.security') }}</v-card-title>
+    <v-card-text>
+      <v-switch
+        v-model="requirePassword"
+        label="Require password on startup"
+        class="mb-4"
+      />
+      <v-switch
+        v-model="encryptStorage"
+        label="Encrypt storage"
+        class="mb-4"
+      />
+      <v-text-field
+        v-model="autoLockTimeout"
+        label="Auto-lock timeout (minutes)"
+        type="number"
+        class="mb-4"
+      />
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="primary" @click="saveSettings">
+        {{ $t('common.save') }}
+      </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useSettingsStore } from "@/stores/settingsStore";
-import { useSecureStore } from "@/stores/secureStore";
+import { ref, onMounted } from 'vue'
+import { useSettingsStore } from '@/stores/settingsStore'
 
-const settingsStore = useSettingsStore();
-const secureStore = useSecureStore();
+const settingsStore = useSettingsStore()
 
-const requirePassword = ref(false);
-const lockOnIdle = ref(false);
-const idleTimeout = ref(10);
-const enableEncryption = ref(false);
-const securityLevel = ref("medium");
-
-const securityLevels = [
-  { text: "Low", value: "low" },
-  { text: "Medium", value: "medium" },
-  { text: "High", value: "high" },
-  { text: "Maximum", value: "maximum" },
-];
+const requirePassword = ref(false)
+const encryptStorage = ref(false)
+const autoLockTimeout = ref(0)
 
 onMounted(() => {
-  requirePassword.value =
-    settingsStore.settings.security.requirePasswordOnStartup;
-  lockOnIdle.value = settingsStore.settings.security.lockOnIdle;
-  idleTimeout.value = settingsStore.settings.security.idleTimeout;
-  enableEncryption.value = settingsStore.settings.security.enableEncryption;
-  securityLevel.value = secureStore.securityLevel;
-});
+  requirePassword.value = settingsStore.settings.security.requirePasswordOnStartup
+  encryptStorage.value = settingsStore.settings.security.encryptStorage
+  autoLockTimeout.value = settingsStore.settings.security.autoLockTimeout
+})
 
-function updateSecurityOptions() {
-  settingsStore.setSecurityOptions({
-    requirePasswordOnStartup: requirePassword.value,
-    lockOnIdle: lockOnIdle.value,
-    idleTimeout: idleTimeout.value,
-    enableEncryption: enableEncryption.value,
-  });
-}
-
-function setSecurityLevel() {
-  secureStore.setSecurityLevel(securityLevel.value);
-}
-
-function resetSecurity() {
-  requirePassword.value = false;
-  lockOnIdle.value = false;
-  idleTimeout.value = 10;
-  enableEncryption.value = false;
-  securityLevel.value = "medium";
-  updateSecurityOptions();
-  setSecurityLevel();
+function saveSettings() {
+  settingsStore.updateSetting('security.requirePasswordOnStartup', requirePassword.value)
+  settingsStore.updateSetting('security.encryptStorage', encryptStorage.value)
+  settingsStore.updateSetting('security.autoLockTimeout', autoLockTimeout.value)
+  settingsStore.saveSettings()
 }
 </script>

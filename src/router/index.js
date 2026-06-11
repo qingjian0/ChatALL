@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router"
 
-const BASE_PATH = process.env.NODE_ENV === "production" ? "/ChatALL/" : "/";
+const BASE_PATH = process.env.NODE_ENV === "production" ? "/ChatALL/" : "/"
 
 const router = createRouter({
   history: createWebHistory(BASE_PATH),
@@ -87,47 +87,47 @@ const router = createRouter({
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition;
+      return savedPosition
     } else if (to.hash) {
-      return { el: to.hash, behavior: "smooth" };
+      return { el: to.hash, behavior: "smooth" }
     } else {
-      return { top: 0, behavior: "smooth" };
+      return { top: 0, behavior: "smooth" }
     }
   },
-});
+})
 
 router.beforeEach((to, from, next) => {
-  const settingsStore = useSettingsStore();
-  const secureStore = useSecureStore();
+  const settingsStore = useSettingsStore()
+  const secureStore = useSecureStore()
 
   if (to.name === "Lock") {
-    next();
-    return;
+    next()
+    return
   }
 
   if (
     settingsStore.settings.security.requirePasswordOnStartup &&
     !secureStore.isAuthenticated
   ) {
-    next({ name: "Lock" });
-    return;
+    next({ name: "Lock" })
+    return
   }
 
-  next();
-});
+  next()
+})
 
 router.afterEach((to) => {
-  document.title = `ChatALL - ${to.name || "Home"}`;
-});
+  document.title = `ChatALL - ${to.name || "Home"}`
+})
 
 function useSettingsStore() {
-  const { useSettingsStore: store } = require("@/stores/settingsStore");
-  return store();
+  const { useSettingsStore: store } = require("@/stores/settingsStore")
+  return store()
 }
 
 function useSecureStore() {
-  const { useSecureStore: store } = require("@/stores/secureStore");
-  return store();
+  const { useSecureStore: store } = require("@/stores/secureStore")
+  return store()
 }
 
-export default router;
+export default router

@@ -1,104 +1,77 @@
-import { isElectron } from "./platformDetector";
+import { isElectron } from './platformDetector'
 
-function safeRequireElectron() {
-  try {
-    if (isElectron() && typeof window.require === "function") {
-      return window.require("electron");
-    }
-  } catch (e) {
-    // Web environment
+let electronShell = null
+
+try {
+  if (isElectron() && typeof window.require === 'function') {
+    const { shell } = window.require('electron')
+    electronShell = shell
   }
-  return null;
+} catch (e) {
+  console.warn('[Shell Adapter] Electron Shell not available')
 }
 
 const shell = {
-  openExternal: async function (url) {
-    const electron = safeRequireElectron();
-    if (electron?.shell) {
-      return electron.shell.openExternal(url);
-    } else {
-      return new Promise((resolve, reject) => {
-        const newWindow = window.open(url, "_blank", "noopener,noreferrer");
-        if (newWindow) {
-          newWindow.focus();
-          resolve();
-        } else {
-          reject(new Error("Failed to open window"));
-        }
-      });
+  openExternal: async (url) => {
+    if (electronShell) {
+      return electronShell.openExternal(url)
+    }
+    window.open(url, '_blank', 'noopener,noreferrer')
+    return Promise.resolve()
+  },
+
+  openPath: async (path) => {
+    if (electronShell) {
+      return electronShell.openPath(path)
+    }
+    console.warn('[Shell Adapter] openPath not supported in web')
+    return Promise.resolve()
+  },
+
+  showItemInFolder: async (fullPath) => {
+    if (electronShell) {
+      return electronShell.showItemInFolder(fullPath)
+    }
+    console.warn('[Shell Adapter] showItemInFolder not supported in web')
+    return Promise.resolve()
+  },
+
+  beep: () => {
+    if (electronShell) {
+      electronShell.beep()
+      return
+    }
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+      const oscillator = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
+      oscillator.connect(gainNode)
+      gainNode.connect(audioContext.destination)
+      oscillator.frequency.value = 800
+      oscillator.type = 'sine'
+      gainNode.gain.value = 0.1
+      oscillator.start()
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1)
+      oscillator.stop(audioContext.currentTime + 0.1)
+    } catch (e) {
+      console.warn('[Shell Adapter] beep not supported')
     }
   },
 
-  openPath: async function (path) {
-    const electron = safeRequireElectron();
-    if (electron?.shell) {
-      return electron.shell.openPath(path);
-    } else {
-      console.warn("shell.openPath is not supported in web environment");
-      return Promise.resolve("");
+  writeText: async (text) => {
+    if (electronShell) {
+      return electronShell.writeText(text)
     }
+    return navigator.clipboard.writeText(text)
   },
 
-  showItemInFolder: async function (fullPath) {
-    const electron = safeRequireElectron();
-    if (electron?.shell) {
-      return electron.shell.showItemInFolder(fullPath);
-    } else {
-      console.warn(
-        "shell.showItemInFolder is not supported in web environment",
-      );
-      return Promise.resolve();
+  readText: async () => {
+    if (electronShell) {
+      return electronShell.readText()
     }
-  },
+    return navigator.clipboard.readText()
+  }
+}
 
-  beep: function () {
-    const electron = safeRequireElectron();
-    if (electron?.shell) {
-      electron.shell.beep();
-    } else {
-      try {
-        const audioContext = new (window.AudioContext ||
-          window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        oscillator.frequency.value = 800;
-        oscillator.type = "sine";
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(
-          0.01,
-          audioContext.currentTime + 0.1,
-        );
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.1);
-      } catch (e) {
-        console.warn("Audio not supported");
-      }
-    }
-  },
-
-  writeText: async function (text) {
-    if (navigator.clipboard) {
-      return navigator.clipboard.writeText(text);
-    } else {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      return Promise.resolve();
-    }
-  },
-
-  readText: async function () {
-    if (navigator.clipboard) {
-      return navigator.clipboard.readText();
-    } else {
-      return Promise.resolve("");
-    }
-  },
-};
-
-export { shell };
+export { shell }
+export default shell

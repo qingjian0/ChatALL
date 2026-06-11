@@ -1,19 +1,19 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import i18n from "./i18n";
-import router from "./router";
-import { createPinia } from "pinia";
+import { createApp } from "vue"
+import App from "./App.vue"
+import i18n from "./i18n"
+import router from "./router"
+import { createPinia } from "pinia"
 
-import { createVueI18nAdapter } from "vuetify/locale/adapters/vue-i18n";
-import { useI18n } from "vue-i18n";
-import { resolveTheme, applyTheme } from "./theme";
+import { createVueI18nAdapter } from "vuetify/locale/adapters/vue-i18n"
+import { useI18n } from "vue-i18n"
+import { resolveTheme, applyTheme } from "./theme"
 
-import "vuetify/styles";
-import { createVuetify } from "vuetify";
-import * as components from "vuetify/components";
-import * as directives from "vuetify/directives";
+import "vuetify/styles"
+import { createVuetify } from "vuetify"
+import * as components from "vuetify/components"
+import * as directives from "vuetify/directives"
 
-const pinia = createPinia();
+const pinia = createPinia()
 
 const vuetify = createVuetify({
   components: { ...components },
@@ -59,29 +59,28 @@ const vuetify = createVuetify({
       },
     },
   },
-});
+})
 
-const app = createApp(App);
+const app = createApp(App)
 
-app.use(i18n);
-app.use(pinia);
-app.use(router);
-app.use(vuetify);
+app.use(i18n)
+app.use(pinia)
+app.use(router)
+app.use(vuetify)
 
 const loadOptionalDependencies = async () => {
   try {
-    const [VueMatomo, VueShortkey, VMdPreviewModule] = await Promise.all([
-      import("vue-matomo"),
+    const [VueShortkey, VMdPreviewModule] = await Promise.all([
       import("vue3-shortkey"),
       import("@kangc/v-md-editor/lib/preview"),
-    ]);
+    ])
 
-    import("material-design-icons/iconfont/material-icons.css");
-    import("@kangc/v-md-editor/lib/style/preview.css");
-    import("@kangc/v-md-editor/lib/theme/style/vuepress.css");
-    import("@kangc/v-md-editor/lib/plugins/copy-code/copy-code.css");
-    import("@kangc/v-md-editor/lib/style/base-editor.css");
-    import("@kangc/v-md-editor/lib/theme/style/github.css");
+    import("material-design-icons/iconfont/material-icons.css")
+    import("@kangc/v-md-editor/lib/style/preview.css")
+    import("@kangc/v-md-editor/lib/theme/style/vuepress.css")
+    import("@kangc/v-md-editor/lib/plugins/copy-code/copy-code.css")
+    import("@kangc/v-md-editor/lib/style/base-editor.css")
+    import("@kangc/v-md-editor/lib/theme/style/github.css")
 
     const [
       createLineNumbertPlugin,
@@ -95,69 +94,27 @@ const loadOptionalDependencies = async () => {
       import("@kangc/v-md-editor/lib/theme/vuepress.js"),
       import("prismjs"),
       import("@kangc/v-md-editor/lib/plugins/katex/npm"),
-    ]);
+    ])
 
     VMdPreviewModule.default
       .use(vuepressTheme.default, { Prism: Prism.default })
       .use(createLineNumbertPlugin.default())
       .use(createCopyCodePlugin.default())
-      .use(createKatexPlugin.default());
+      .use(createKatexPlugin.default())
 
-    app.use(VMdPreviewModule.default);
-    app.use(VueShortkey.default);
-    app.use(VueMatomo.default, {
-      host: "https://matomo.chatall.ai/",
-      siteId: 1,
-      trackerFileName: "matomo",
-      enableLinkTracking: true,
-      requireConsent: false,
-      trackInitialView: true,
-      disableCookies: true,
-      requireCookieConsent: false,
-      enableHeartBeatTimer: false,
-      heartBeatTimerInterval: 15,
-      debug: false,
-      userId: undefined,
-      cookieDomain: undefined,
-      domains: "*",
-      preInitActions: [
-        [
-          "setCustomVariable",
-          "1",
-          "AppVersion",
-          require("../package.json").version,
-          "visit",
-        ],
-      ],
-      trackSiteSearch: false,
-      crossOrigin: undefined,
-    });
+    app.use(VMdPreviewModule.default)
+    app.use(VueShortkey.default)
   } catch (error) {
-    console.warn("Failed to load optional dependencies:", error);
+    console.warn("Failed to load optional dependencies:", error)
   }
-};
-
-const loadGeetest = () => {
-  setTimeout(() => {
-    fetch("https://static.geetest.com/g5/gd.js")
-      .then((response) => response.text())
-      .then((text) => {
-        const script = document.createElement("script");
-        script.textContent = text;
-        document.head.appendChild(script);
-      })
-      .catch(() => {});
-  }, 3000);
-};
+}
 
 const initApp = async () => {
-  applyTheme(resolveTheme());
+  applyTheme(resolveTheme())
 
-  await loadOptionalDependencies();
+  await loadOptionalDependencies()
 
-  app.mount("#app");
+  app.mount("#app")
+}
 
-  loadGeetest();
-};
-
-initApp();
+initApp()

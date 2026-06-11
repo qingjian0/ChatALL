@@ -1,132 +1,65 @@
-import { isElectron } from "./platformDetector";
+import { isElectron, PlatformType } from './platformDetector'
 
 class WebEventBus {
   constructor() {
-    this.handlers = {};
+    this.listeners = {}
   }
 
-  on(channel, listener) {
-    if (!this.handlers[channel]) {
-      this.handlers[channel] = [];
+  on(channel, handler) {
+    if (!this.listeners[channel]) {
+      this.listeners[channel] = []
     }
-    this.handlers[channel].push(listener);
-    return this;
+    this.listeners[channel].push(handler)
+    return () => {
+      this.listeners[channel] = this.listeners[channel].filter(h => h !== handler)
+    }
   }
 
-  off(channel, listener) {
-    if (!this.handlers[channel]) return this;
-    this.handlers[channel] = this.handlers[channel].filter(
-      (h) => h !== listener,
-    );
-    return this;
+  emit(channel, ...args) {
+    const handlers = this.listeners[channel] || []
+    handlers.forEach(handler => handler(...args))
   }
 
-  send(channel, ...args) {
-    const event = new CustomEvent(`ipc:${channel}`, { detail: args });
-    window.dispatchEvent(event);
-    return this;
-  }
-
-  invoke(channel, ...args) {
-    return new Promise((resolve) => {
-      const responseChannel = `ipc:response:${channel}:${Date.now()}`;
-      const timeout = setTimeout(() => {
-        this.off(responseChannel);
-        resolve(null);
-      }, 5000);
-
-      const handler = (event) => {
-        clearTimeout(timeout);
-        this.off(responseChannel, handler);
-        resolve(event.detail);
-      };
-
-      this.on(responseChannel, handler);
-      this.send(channel, ...args, responseChannel);
-    });
+  removeListener(channel, handler) {
+    if (this.listeners[channel]) {
+      this.listeners[channel] = this.listeners[channel].filter(h => h !== handler)
+    }
   }
 
   removeAllListeners(channel) {
     if (channel) {
-      delete this.handlers[channel];
+      delete this.listeners[channel]
     } else {
-      this.handlers = {};
+      this.listeners = {}
     }
-    return this;
   }
 }
 
-const webEventBus = new WebEventBus();
+let electronIpcRenderer = null
+const webEventBus = new WebEventBus()
 
-let electronIpcRenderer = null;
 try {
-  if (isElectron() && typeof window.require === "function") {
-    electronIpcRenderer = window.require("electron").ipcRenderer;
+  if (isElectron() && typeof window.require === 'function') {
+    const { ipcRenderer } = window.require('electron')
+    electronIpcRenderer = ipcRenderer
   }
 } catch (e) {
-  // Web environment, no Electron available
+  console.warn('[IPC Adapter] Electron IPC not available')
 }
 
 const ipcRenderer = {
-  on: (channel, listener) => {
-    if (electronIpcRenderer) {
-      electronIpcRenderer.on(channel, listener);
-    } else {
-      webEventBus.on(channel, listener);
-      window.addEventListener(`ipc:${channel}`, (event) => {
-        listener(null, ...event.detail);
-      });
-    }
-    return ipcRenderer;
+  on: electronIpcRenderer?.on?.bind(electronIpcRenderer) || webEventBus.on.bind(webEventBus),
+  send: electronIpcRenderer?.send?.bind(electronIpcRenderer) || webEventBus.emit.bind(webEventBus),
+  invoke: electronIpcRenderer?.invoke?.bind(electronIpcRenderer) || async (channel, ...args) => {
+    return new Promise(resolve => {
+      webEventBus.emit(channel, ...args, resolve)
+    })
   },
+  removeListener: electronIpcRenderer?.removeListener?.bind(electronIpcRenderer) || webEventBus.removeListener.bind(webEventBus),
+  removeAllListeners: electronIpcRenderer?.removeAllListeners?.bind(electronIpcRenderer) || webEventBus.removeAllListeners.bind(webEventBus),
+  emit: webEventBus.emit.bind(webEventBus),
+  _platform: isElectron() ? PlatformType.ELECTRON : PlatformType.WEB
+}
 
-  off: (channel, listener) => {
-    if (electronIpcRenderer) {
-      electronIpcRenderer.off(channel, listener);
-    } else {
-      webEventBus.off(channel, listener);
-    }
-    return ipcRenderer;
-  },
-
-  send: (channel, ...args) => {
-    if (electronIpcRenderer) {
-      electronIpcRenderer.send(channel, ...args);
-    } else {
-      webEventBus.send(channel, ...args);
-    }
-    return ipcRenderer;
-  },
-
-  invoke: async (channel, ...args) => {
-    if (electronIpcRenderer) {
-      return electronIpcRenderer.invoke(channel, ...args);
-    } else {
-      return webEventBus.invoke(channel, ...args);
-    }
-  },
-
-  removeAllListeners: (channel) => {
-    if (electronIpcRenderer) {
-      electronIpcRenderer.removeAllListeners(channel);
-    } else {
-      webEventBus.removeAllListeners(channel);
-    }
-    return ipcRenderer;
-  },
-
-  once: (channel, listener) => {
-    if (electronIpcRenderer) {
-      electronIpcRenderer.once(channel, listener);
-    } else {
-      const onceHandler = (...args) => {
-        webEventBus.off(channel, onceHandler);
-        listener(...args);
-      };
-      webEventBus.on(channel, onceHandler);
-    }
-    return ipcRenderer;
-  },
-};
-
-export { ipcRenderer, webEventBus };
+export { ipcRenderer, webEventBus }
+export default ipcRenderer

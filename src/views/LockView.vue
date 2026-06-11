@@ -1,42 +1,44 @@
 <template>
-
-  <div class="lock-view">
-     <v-card
-      > <v-card-title class="text-h5">App Locked</v-card-title> <v-card-text
-        > <v-container
-          > <v-text-field
+  <v-container class="fill-height">
+    <v-layout align-center justify-center>
+      <v-card class="pa-8" style="max-width: 400px;">
+        <v-card-title class="text-center">
+          <span class="text-h4">Enter Password</span>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
             v-model="password"
-            label="Master Password"
+            label="Password"
             type="password"
             @keyup.enter="unlock"
-          /> <v-btn color="primary" @click="unlock"> Unlock </v-btn>
-          <p v-if="error" class="text-red"> {{ error }} </p>
-           </v-container
-        > </v-card-text
-      > </v-card
-    >
-  </div>
-
+            class="mt-4"
+          />
+        </v-card-text>
+        <v-card-actions class="justify-center">
+          <v-btn color="primary" @click="unlock">
+            Unlock
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-layout>
+  </v-container>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useSecureStore } from "@/stores/secureStore";
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useSecureStore } from '@/stores/secureStore'
 
-const router = useRouter();
-const secureStore = useSecureStore();
-
-const password = ref("");
-const error = ref("");
+const router = useRouter()
+const secureStore = useSecureStore()
+const password = ref('')
 
 async function unlock() {
-  const success = await secureStore.unlock(password.value);
+  const success = await secureStore.authenticate(password.value)
   if (success) {
-    router.push({ name: "Home" });
+    router.push('/')
   } else {
-    error.value = "Invalid password";
-    password.value = "";
+    alert('Invalid password')
   }
 }
 </script>

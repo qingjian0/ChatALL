@@ -1,50 +1,62 @@
-const PlatformType = {
-  ELECTRON: "electron",
-  WEB: "web",
-  MOBILE: "mobile",
-};
+export const PlatformType = {
+  ELECTRON: 'electron',
+  WEB: 'web',
+  MOBILE: 'mobile'
+}
 
-const detectPlatform = () => {
-  if (typeof window !== "undefined") {
-    // Check Electron environment safely
-    try {
-      if (window.process?.versions?.electron) {
-        return PlatformType.ELECTRON;
-      }
-    } catch (e) {
-      // Not Electron
+let detectedPlatform = null
+
+function detectPlatform() {
+  if (detectedPlatform) return detectedPlatform
+  
+  try {
+    if (window.process?.versions?.electron) {
+      detectedPlatform = PlatformType.ELECTRON
+      return detectedPlatform
     }
-    try {
-      if (typeof window.require === "function") {
-        const electron = window.require("electron");
+  } catch (e) {}
+  
+  try {
+    if (typeof window.require === 'function') {
+      try {
+        const electron = window.require('electron')
         if (electron?.ipcRenderer || electron?.remote) {
-          return PlatformType.ELECTRON;
+          detectedPlatform = PlatformType.ELECTRON
+          return detectedPlatform
         }
-      }
-    } catch (e) {
-      // Not Electron or Webpack build-time error
+      } catch (e) {}
     }
-
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isMobile =
-      /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
-        userAgent,
-      );
-
-    if (isMobile) {
-      return PlatformType.MOBILE;
-    }
-
-    return PlatformType.WEB;
+  } catch (e) {}
+  
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    detectedPlatform = PlatformType.MOBILE
+  } else {
+    detectedPlatform = PlatformType.WEB
   }
+  
+  return detectedPlatform
+}
 
-  return PlatformType.WEB;
-};
+export function isElectron() {
+  return detectPlatform() === PlatformType.ELECTRON
+}
 
-const isElectron = () => detectPlatform() === PlatformType.ELECTRON;
-const isWeb = () => detectPlatform() === PlatformType.WEB;
-const isMobile = () => detectPlatform() === PlatformType.MOBILE;
+export function isWeb() {
+  return detectPlatform() === PlatformType.WEB
+}
 
-const platform = detectPlatform();
+export function isMobile() {
+  return detectPlatform() === PlatformType.MOBILE
+}
 
-export { PlatformType, detectPlatform, isElectron, isWeb, isMobile, platform };
+export const platform = detectPlatform()
+
+export { detectPlatform }
+export default {
+  PlatformType,
+  platform,
+  isElectron,
+  isWeb,
+  isMobile,
+  detectPlatform
+}

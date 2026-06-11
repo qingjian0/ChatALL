@@ -1,61 +1,88 @@
-import { isElectron } from "./platformDetector";
-import { ipcRenderer } from "./ipcAdapter";
+import { isElectron, PlatformType } from './platformDetector'
+import { ipcRenderer } from './ipcAdapter'
 
-const getSystemTheme = () => {
-  if (typeof window === "undefined") return "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-};
+export const Theme = {
+  LIGHT: 'light',
+  DARK: 'dark',
+  SYSTEM: 'system'
+}
 
-const nativeTheme = {
-  shouldUseDarkColors: false,
-  themeSource: "system",
+export const Mode = {
+  LIGHT: 'light',
+  DARK: 'dark',
+  SYSTEM: 'system'
+}
 
-  initialize: async function () {
-    if (isElectron()) {
+let nativeTheme = null
+
+try {
+  if (isElectron() && typeof window.require === 'function') {
+    const { nativeTheme: electronNativeTheme } = window.require('electron')
+    nativeTheme = electronNativeTheme
+  }
+} catch (e) {
+  console.warn('[Theme Adapter] Electron nativeTheme not available')
+}
+
+function getSystemThemeWeb() {
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return Theme.DARK
+  }
+  return Theme.LIGHT
+}
+
+export async function resolveTheme(mode, ipcRendererRef) {
+  const actualMode = mode || Mode.SYSTEM
+  let resolvedTheme = actualMode
+
+  if (actualMode === Mode.SYSTEM) {
+    if (isElectron() && ipcRendererRef) {
       try {
-        const result = await ipcRenderer.invoke("get-native-theme");
-        this.shouldUseDarkColors = result.shouldUseDarkColors || false;
+        const nativeThemeResult = await ipcRendererRef.invoke('get-native-theme')
+        resolvedTheme = nativeThemeResult.shouldUseDarkColors ? Theme.DARK : Theme.LIGHT
       } catch (error) {
-        console.warn("Failed to get native theme from Electron:", error);
-        this.shouldUseDarkColors = getSystemTheme() === "dark";
+        resolvedTheme = getSystemThemeWeb()
       }
     } else {
-      this.shouldUseDarkColors = getSystemTheme() === "dark";
+      resolvedTheme = getSystemThemeWeb()
     }
-    return this;
-  },
+  }
 
-  on: function (event, listener) {
-    if (isElectron()) {
-      ipcRenderer.on("on-updated-system-theme", () => {
-        ipcRenderer.invoke("get-native-theme").then((result) => {
-          this.shouldUseDarkColors = result.shouldUseDarkColors || false;
-          listener();
-        });
-      });
-    } else {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      mediaQuery.addEventListener("change", (e) => {
-        this.shouldUseDarkColors = e.matches;
-        listener();
-      });
-    }
-    return this;
-  },
+  return resolvedTheme
+}
 
-  setThemeSource: function (source) {
-    this.themeSource = source;
-    if (source === "dark") {
-      this.shouldUseDarkColors = true;
-    } else if (source === "light") {
-      this.shouldUseDarkColors = false;
-    } else {
-      this.shouldUseDarkColors = getSystemTheme() === "dark";
-    }
-    return this;
-  },
-};
+export function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme)
+  if (theme === Theme.DARK) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+}
 
-export { nativeTheme, getSystemTheme };
+export function watchSystemTheme(callback) {
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  
+  const handler = (e) => {
+    callback(e.matches ? Theme.DARK : Theme.LIGHT)
+  }
+  
+  mediaQuery.addEventListener('change', handler)
+  return () => {
+    mediaQuery.removeEventListener('change', handler)
+  }
+}
+
+const themeAdapter = {
+  Theme,
+  Mode,
+  nativeTheme,
+  resolveTheme,
+  applyTheme,
+  watchSystemTheme,
+  getSystemTheme: getSystemThemeWeb,
+  _platform: isElectron() ? PlatformType.ELECTRON : PlatformType.WEB
+}
+
+export { themeAdapter as nativeTheme }
+export default themeAdapter

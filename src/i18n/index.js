@@ -1,45 +1,62 @@
-import { createI18n } from "vue-i18n";
-
-// Import stored language
-import store from "../store";
-var lang = store.state.lang;
-if (lang == "auto") {
-  lang = navigator.language || navigator.userLanguage || "en";
-  lang = lang.substr(0, 2); // Only use the first two characters (e.g. "en")
-}
-
-// Import translation files here
-import enMessages from "./locales/en.json";
-import zhMessages from "./locales/zh.json";
-import zhtwMessages from "./locales/zhtw.json";
-import deMessages from "./locales/de.json";
-import ruMessages from "./locales/ru.json";
-import viMessages from "./locales/vi.json";
-import frMessages from "./locales/fr.json";
-import itMessages from "./locales/it.json";
-import koMessages from "./locales/ko.json";
-import esMessages from "./locales/es.json";
-import jaMessages from "./locales/ja.json";
-
-const messages = {
-  en: enMessages,
-  zh: zhMessages,
-  zhtw: zhtwMessages,
-  de: deMessages,
-  ru: ruMessages,
-  vi: viMessages,
-  it: itMessages,
-  fr: frMessages,
-  ko: koMessages,
-  es: esMessages,
-  ja: jaMessages,
-};
-
-const i18n = createI18n({
-  legacy: false, // Vuetify does not support the legacy mode of vue-i18n
-  locale: lang,
+export default {
+  locale: "zh-CN",
   fallbackLocale: "en",
-  messages,
-});
-
-export default i18n;
+  messages: {
+    en: {
+      error: {
+        error: "Error",
+        solveChallenge: "Please solve the Cloudflare challenge",
+      },
+      common: {
+        ok: "OK",
+        cancel: "Cancel",
+        save: "Save",
+        delete: "Delete",
+        edit: "Edit",
+        add: "Add",
+        close: "Close",
+      },
+      chat: {
+        newChat: "New Chat",
+        send: "Send",
+        messagePlaceholder: "Type your message...",
+      },
+      settings: {
+        bots: "Bots",
+        appearance: "Appearance",
+        account: "Account",
+        security: "Security",
+        privacy: "Privacy",
+        advanced: "Advanced",
+      },
+    },
+    "zh-CN": {
+      error: {
+        error: "错误",
+        solveChallenge: "请解决 Cloudflare 验证",
+      },
+      common: {
+        ok: "确定",
+        cancel: "取消",
+        save: "保存",
+        delete: "删除",
+        edit: "编辑",
+        add: "添加",
+        close: "关闭",
+      },
+      chat: {
+        newChat: "新聊天",
+        send: "发送",
+        messagePlaceholder: "输入消息...",
+      },
+      settings: {
+        bots: "机器人",
+        appearance: "外观",
+        account: "账号",
+        security: "安全",
+        privacy: "隐私",
+        advanced: "高级",
+      },
+    },
+  },
+}
