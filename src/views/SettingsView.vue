@@ -24,7 +24,8 @@
           <v-list-item @click="$router.push('/settings/security')">
             <v-list-item-icon>
               <v-icon>mdi-shield</v-icon>
-            </v-list-item-title>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('settings.security') }}</v-list-item-title>
           </v-list-item>
           <v-list-item @click="$router.push('/settings/privacy')">
             <v-list-item-icon>

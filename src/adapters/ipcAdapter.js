@@ -10,19 +10,21 @@ class WebEventBus {
       this.listeners[channel] = []
     }
     this.listeners[channel].push(handler)
-    return () => {
-      this.listeners[channel] = this.listeners[channel].filter(h => h !== handler)
+    var self = this
+    return function() {
+      self.listeners[channel] = self.listeners[channel].filter(function(h) { return h !== handler })
     }
   }
 
-  emit(channel, ...args) {
-    const handlers = this.listeners[channel] || []
-    handlers.forEach(handler => handler(...args))
+  emit(channel) {
+    var args = Array.prototype.slice.call(arguments, 1)
+    var handlers = this.listeners[channel] || []
+    handlers.forEach(function(handler) { handler.apply(null, args) })
   }
 
   removeListener(channel, handler) {
     if (this.listeners[channel]) {
-      this.listeners[channel] = this.listeners[channel].filter(h => h !== handler)
+      this.listeners[channel] = this.listeners[channel].filter(function(h) { return h !== handler })
     }
   }
 
@@ -35,28 +37,66 @@ class WebEventBus {
   }
 }
 
-let electronIpcRenderer = null
-const webEventBus = new WebEventBus()
+var electronIpcRenderer = null
+var webEventBus = new WebEventBus()
 
 try {
   if (isElectron() && typeof window.require === 'function') {
-    const { ipcRenderer } = window.require('electron')
-    electronIpcRenderer = ipcRenderer
+    var modules = window.require('electron')
+    electronIpcRenderer = modules.ipcRenderer
   }
 } catch (e) {
   console.warn('[IPC Adapter] Electron IPC not available')
 }
 
-const ipcRenderer = {
-  on: electronIpcRenderer?.on?.bind(electronIpcRenderer) || webEventBus.on.bind(webEventBus),
-  send: electronIpcRenderer?.send?.bind(electronIpcRenderer) || webEventBus.emit.bind(webEventBus),
-  invoke: electronIpcRenderer?.invoke?.bind(electronIpcRenderer) || async (channel, ...args) => {
-    return new Promise(resolve => {
-      webEventBus.emit(channel, ...args, resolve)
-    })
-  },
-  removeListener: electronIpcRenderer?.removeListener?.bind(electronIpcRenderer) || webEventBus.removeListener.bind(webEventBus),
-  removeAllListeners: electronIpcRenderer?.removeAllListeners?.bind(electronIpcRenderer) || webEventBus.removeAllListeners.bind(webEventBus),
+function webInvoke(channel) {
+  var args = Array.prototype.slice.call(arguments, 1)
+  return new Promise(function(resolve) {
+    webEventBus.emit.apply(webEventBus, [channel].concat(args).concat([resolve]))
+  })
+}
+
+function getOn() {
+  if (electronIpcRenderer && electronIpcRenderer.on) {
+    return electronIpcRenderer.on.bind(electronIpcRenderer)
+  }
+  return webEventBus.on.bind(webEventBus)
+}
+
+function getSend() {
+  if (electronIpcRenderer && electronIpcRenderer.send) {
+    return electronIpcRenderer.send.bind(electronIpcRenderer)
+  }
+  return webEventBus.emit.bind(webEventBus)
+}
+
+function getInvoke() {
+  if (electronIpcRenderer && electronIpcRenderer.invoke) {
+    return electronIpcRenderer.invoke.bind(electronIpcRenderer)
+  }
+  return webInvoke
+}
+
+function getRemoveListener() {
+  if (electronIpcRenderer && electronIpcRenderer.removeListener) {
+    return electronIpcRenderer.removeListener.bind(electronIpcRenderer)
+  }
+  return webEventBus.removeListener.bind(webEventBus)
+}
+
+function getRemoveAllListeners() {
+  if (electronIpcRenderer && electronIpcRenderer.removeAllListeners) {
+    return electronIpcRenderer.removeAllListeners.bind(electronIpcRenderer)
+  }
+  return webEventBus.removeAllListeners.bind(webEventBus)
+}
+
+var ipcRenderer = {
+  on: getOn(),
+  send: getSend(),
+  invoke: getInvoke(),
+  removeListener: getRemoveListener(),
+  removeAllListeners: getRemoveAllListeners(),
   emit: webEventBus.emit.bind(webEventBus),
   _platform: isElectron() ? PlatformType.ELECTRON : PlatformType.WEB
 }
