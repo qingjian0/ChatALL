@@ -1,0 +1,38 @@
+# Harness Environment Configuration
+# This file defines the environments for ChatALL Web Access
+
+environment:
+  name: ChatALL Web Environments
+  identifier: ChatALL_Web_Environments
+  projectIdentifier: ChatALL
+  orgIdentifier: default
+  tags: {}
+  type: PreProduction
+  spec:
+    connectors:
+      - ref: github_connector
+      - ref: dockerhub_connector
+      - ref: kubernetes_connector
+    secrets:
+      - name: NPM_TOKEN
+        type: SecretText
+        description: "NPM registry authentication token"
+      - name: GH_TOKEN
+        type: SecretText
+        description: "GitHub personal access token for deployment"
+      - name: SENTRY_DSN
+        type: SecretText
+        description: "Sentry DSN for error tracking"
+    configurations:
+      - name: NODE_ENV
+        type: String
+        value: production
+      - name: VUE_APP_ENV
+        type: String
+        value: production
+      - name: VUE_APP_API_BASE_URL
+        type: String
+        value: https://api.chatall.app
+      - name: PUBLIC_PATH
+        type: String
+        value: /ChatALL/

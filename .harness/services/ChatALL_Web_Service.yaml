@@ -1,0 +1,88 @@
+# Harness Service Configuration
+# Defines the ChatALL Web service for deployment
+
+service:
+  name: ChatALL Web Service
+  identifier: ChatALL_Web_Service
+  projectIdentifier: ChatALL
+  orgIdentifier: default
+  tags: {}
+  serviceDefinition:
+    type: Kubernetes
+    spec:
+      manifests:
+        - manifest:
+            identifier: deployment
+            type: Deployment
+            spec: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: chatall-web
+                labels:
+                  app: chatall-web
+              spec:
+                replicas: 3
+                selector:
+                  matchLabels:
+                    app: chatall-web
+                template:
+                  metadata:
+                    labels:
+                      app: chatall-web
+                  spec:
+                    containers:
+                      - name: chatall-web
+                        image: nginx:alpine
+                        ports:
+                          - containerPort: 80
+                        volumeMounts:
+                          - name: static-files
+                            mountPath: /usr/share/nginx/html
+                    volumes:
+                      - name: static-files
+                        persistentVolumeClaim:
+                          claimName: chatall-static-pvc
+        - manifest:
+            identifier: service
+            type: Service
+            spec: |
+              apiVersion: v1
+              kind: Service
+              metadata:
+                name: chatall-web-service
+              spec:
+                selector:
+                  app: chatall-web
+                ports:
+                  - protocol: TCP
+                    port: 80
+                    targetPort: 80
+                type: ClusterIP
+        - manifest:
+            identifier: ingress
+            type: Ingress
+            spec: |
+              apiVersion: networking.k8s.io/v1
+              kind: Ingress
+              metadata:
+                name: chatall-web-ingress
+                annotations:
+                  nginx.ingress.kubernetes.io/ssl-redirect: "true"
+                  nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+              spec:
+                tls:
+                  - hosts:
+                      - chatall.app
+                    secretName: chatall-tls
+                rules:
+                  - host: chatall.app
+                    http:
+                      paths:
+                        - path: /
+                          pathType: Prefix
+                          backend:
+                            service:
+                              name: chatall-web-service
+                              port:
+                                number: 80

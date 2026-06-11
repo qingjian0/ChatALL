@@ -1,0 +1,108 @@
+# Harness Pipeline Configuration
+# This pipeline automates the build and deployment of ChatALL Web Access
+
+pipeline:
+  name: ChatALL Web CI/CD
+  identifier: ChatALL_Web_CICD
+  projectIdentifier: ChatALL
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: Build
+        identifier: Build
+        description: "Build the Vue.js application for production"
+        type: CI
+        spec:
+          cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: kubernetes_connector
+              namespace: harness-delegate
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Install Dependencies
+                  identifier: Install_Dependencies
+                  spec:
+                    shell: Sh
+                    command: |
+                      npm ci --no-optional --ignore-scripts
+                    workingDirectory: <+pipeline.workingDir>
+              - step:
+                  type: Run
+                  name: Run Lint
+                  identifier: Run_Lint
+                  spec:
+                    shell: Sh
+                    command: |
+                      npm run lint
+                    workingDirectory: <+pipeline.workingDir>
+              - step:
+                  type: Run
+                  name: Build Production
+                  identifier: Build_Production
+                  spec:
+                    shell: Sh
+                    command: |
+                      npm run build:prod
+                    workingDirectory: <+pipeline.workingDir>
+              - step:
+                  type: Run
+                  name: Verify Build
+                  identifier: Verify_Build
+                  spec:
+                    shell: Sh
+                    command: |
+                      node scripts/deploy-verify.js --build
+                    workingDirectory: <+pipeline.workingDir>
+              - step:
+                  type: UploadArtifact
+                  name: Upload Build Artifact
+                  identifier: Upload_Build_Artifact
+                  spec:
+                    sourcePath: <+pipeline.workingDir>/dist
+                    artifactAccount: default
+                    tag: <+pipeline.sequenceId>
+                    storeType: S3
+                    store: harness-artifacts
+    - stage:
+        name: Deploy to GitHub Pages
+        identifier: Deploy_GitHub_Pages
+        description: "Deploy built artifacts to GitHub Pages"
+        type: CD
+        spec:
+          deploymentType: Kubernetes
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: kubernetes_connector
+              namespace: harness-delegate
+              automountServiceAccountToken: true
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Deploy to GH Pages
+                  identifier: Deploy_GH_Pages
+                  spec:
+                    shell: Sh
+                    command: |
+                      git config --global user.email "harness@chatall.app"
+                      git config --global user.name "Harness CI"
+                      npm run deploy
+                    workingDirectory: <+pipeline.workingDir>
+              - step:
+                  type: Run
+                  name: Post Deploy Health Check
+                  identifier: Post_Deploy_Health_Check
+                  spec:
+                    shell: Sh
+                    command: |
+                      node scripts/health-check.js
+                    workingDirectory: <+pipeline.workingDir>
